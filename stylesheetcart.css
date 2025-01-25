@@ -1,0 +1,88 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #9f8bc0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.navbar,
+.footer {
+    background-color: #4e4363;
+    color: rgb(80, 255, 203);
+}
+
+.btn-custom {
+    background-color: #85b1c5;
+    color: #4e4363;
+    transition: background-color 0.3s;
+}
+
+.btn-custom:hover {
+    background-color: rgb(80, 255, 203);
+    color: #4e4363;
+}
+
+.txt-custom {
+    color: rgb(80, 255, 203);
+}
+
+.txt-custom:hover {
+    color: #4e4363;
+}
+
+.card {
+    background-color: #4e4363;
+    border: 1px solid rgb(80, 255, 203);
+    color: white;
+}
+
+.card-title {
+    color:rgb(80, 255, 203);
+}
+
+.card-price {
+    color:rgb(80, 255, 203);
+}
+
+.row.d-flex {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.col-md-3 {
+    flex: 0 0 25%;
+    /* Sidebar ocupa el 25% */
+}
+
+.col-md-9 {
+    flex: 0 0 75%;
+    /* Zona de productos ocupa el 75% */
+}
+
+.form-control,
+.form-select {
+    background-color: #9f8bc0;
+    color: #4e4363;
+    border-color: rgb(80, 255, 203);
+}
+
+.form-control::placeholder {
+    color: #4e4363;
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+.product-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    /* Limita el número de líneas */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* Añade "..." si el texto es más largo */
+}
