@@ -33,10 +33,7 @@ $orders = [
                         <a class="nav-link" href="index.php">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Categorías</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Ofertas</a>
+                        <a class="nav-link" href="#">Contacto</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="login.php">

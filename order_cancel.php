@@ -1,7 +1,6 @@
 <?php
 session_start();
-// Aquí deberías incluir la lógica para verificar si el usuario está autenticado
-// y obtener los datos del pedido desde tu base de datos
+
 $orderId = $_GET['id'] ?? null;
 $orderDate = '2025-01-25'; // Este dato debería venir de la base de datos
 ?>
@@ -29,10 +28,7 @@ $orderDate = '2025-01-25'; // Este dato debería venir de la base de datos
                         <a class="nav-link" href="index.php">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Categorías</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Ofertas</a>
+                        <a class="nav-link" href="#">Contacto</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="login.php">

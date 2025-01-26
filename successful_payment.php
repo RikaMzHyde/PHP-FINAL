@@ -4,18 +4,25 @@ session_start();
 // Verifica si los datos necesarios existen en la sesión
 if (!isset($_SESSION['order_details'], $_SESSION['user_address'], $_SESSION['payment_info'])) {
     // Redirigir a una página de error o a la página de inicio si faltan datos
-    header("Location: index.php");
-    exit;
+//     echo '<pre>';
+//     echo 'Debug variables';
+//  var_dump($_SESSION);
+// // var_dump($_POST);
+// echo '</pre>';
+//     /*header("Location: index.php");
+//     exit;*/
 }
 
 // Datos del pedido
-$orderDetails = $_SESSION['order_details']; // Ejemplo: ['products' => 2, 'total' => 51.87, 'order_number' => 12345]
+$orderDetails = $_SESSION['cart']; // Ejemplo: ['products' => 2, 'total' => 51.87, 'order_number' => 12345]
 
 // Dirección del usuario
 $userAddress = $_SESSION['user_address']; // Ejemplo: ['name' => 'Laura', 'address' => 'Calle Falsa 123', 'city' => 'Madrid', 'zip' => '28001']
 
 // Información del pago
-$paymentInfo = $_SESSION['payment_info']; // Ejemplo: ['method' => 'Tarjeta de crédito']
+$paymentInfo = '';
+// Guardar el método de pago en la sesión si el formulario fue enviado
+$paymentInfo = $_SESSION['pago']
 ?>
 
 <!DOCTYPE html>
@@ -39,11 +46,10 @@ $paymentInfo = $_SESSION['payment_info']; // Ejemplo: ['method' => 'Tarjeta de c
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="index.php">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Categorías</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Ofertas</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Envío</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Devoluciones</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Contacto</a></li>
+                    <a class="nav-link" href="login.php">
+                        <i class="bi bi-person"></i> Mi Cuenta
+                    </a>
                 </ul>
             </div>
         </div>
@@ -56,24 +62,46 @@ $paymentInfo = $_SESSION['payment_info']; // Ejemplo: ['method' => 'Tarjeta de c
                 <div class="col-md-9">
                     <div class="card">
                         <div class="card-body">
-                            <h2 class="card-title text-center mb-4">¡Pedido Realizado con Éxito!</h2>
+                            <?php 
+                            
+                                // Verificar si el pago fue exitoso y el ID del pedido está disponible
+                                if (isset($_SESSION['id_pedido'])) {
+                                    $idPedido = $_SESSION['id_pedido'];
+                            ?>
+                    <h2 class="card-title text-center mb-4">¡Pedido Realizado con Éxito!</h2>
                             <div class="alert alert-success" role="alert">
-                                <h4 class="alert-heading">¡Gracias por tu compra, <?php echo htmlspecialchars($userAddress['name']); ?>!</h4>
+                                <h4 class="alert-heading">¡Gracias por tu compra, <?php echo htmlspecialchars($userAddress['nombre']); ?>!</h4>
                                 <p>Tu pedido ha sido procesado correctamente. Hemos enviado un correo electrónico de confirmación a tu dirección registrada.</p>
                                 <hr>
-                                <p class="mb-0">Número de pedido: <strong>#<?php echo htmlspecialchars($orderDetails['order_number']); ?></strong></p>
+                                <p class="mb-0">Número de pedido: <strong>#<?php echo htmlspecialchars($idPedido); ?></strong></p>
                             </div>
                             <p>Resumen de tu pedido:</p>
                             <ul>
-                                <li>Productos: <?php echo htmlspecialchars($orderDetails['products']); ?></li>
-                                <li>Total: <?php echo htmlspecialchars(number_format($orderDetails['total'], 2)); ?>€</li>
-                                <li>Método de pago: <?php echo htmlspecialchars($paymentInfo['method']); ?></li>
-                                <li>Enviado a: <?php echo htmlspecialchars($userAddress['address'] . ", " . $userAddress['city'] . " " . $userAddress['zip']); ?></li>
+                                <li><strong>Productos:</strong>
+                                <?php 
+                                $total = 0;
+                                foreach ($orderDetails as $product) {
+                                    $productTotal = $product['price'] * $product['quantity'];
+                                    $total += $productTotal;
+                                    echo "<li>" . htmlspecialchars($product['name']) . 
+                                        " - Cantidad: " . htmlspecialchars($product['quantity']) . 
+                                        " - Precio Unitario: " . number_format($product['price'], 2) . "€";
+                                }
+                                ?>
+                                <li><strong>Total del pedido:</strong> <?php echo number_format($total, 2); ?>€
+                                <li><strong>Método de pago:</strong> <?php echo htmlspecialchars($paymentInfo); ?></li>
+                                <li><strong>Enviado a:</strong> <?php echo htmlspecialchars($userAddress['direccion'] . ", " . $userAddress['localidad'] . " " . $userAddress['provincia']); ?></li>
                             </ul>
                             <div class="text-center mt-4">
                                 <a href="index.php" class="btn btn-custom me-2">Volver a la tienda</a>
                                 <a href="order_history.php" class="btn btn-custom">Ver mis pedidos</a>
                             </div>
+                            <?php
+                            } else {
+                                echo "<h1>Error</h1>";
+                                echo "<p>No se encontró información del pedido. Por favor, inténtalo de nuevo.</p>";
+                            }
+                            ?>
                         </div>
                     </div>
                 </div>

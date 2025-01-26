@@ -51,10 +51,7 @@ session_start();
                         <a class="nav-link" href="index.php">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Categorías</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Ofertas</a>
+                        <a class="nav-link" href="#">Contacto</a>
                     </li>
                     <a class="nav-link" href="login.php">
                         <i class="bi bi-person"></i> Mi Cuenta
@@ -64,7 +61,7 @@ session_start();
             <a href="cart.php" class="nav-link ms-3"><i class="bi bi-cart3 fs-4"></i></a>
             <div class="cart-summary d-flex align-items-center justify-content-end p-3">
                 <span class="me-3">Items en carrito: <strong id="cart-items-count">0</strong></span>
-                <span>Total: $<strong id="cart-total-price">0.00</strong>
+                <span>Total: <strong id="cart-total-price">0.00</strong> €
             </div>
         </div>
     </nav>
@@ -91,7 +88,7 @@ session_start();
                             <tfoot>
                                 <tr>
                                     <td colspan="3" class="text-end fw-bold">TOTAL PEDIDO:</td>
-                                    <td id="total_cart_price" class="fw-bold"><?= $totalPrice ?>€</td>
+                                    <td id="total_cart_price" class="fw-bold"></td>
                                     <td></td>
                                 </tr>
                             </tfoot>
@@ -179,12 +176,12 @@ session_start();
                         <td>
                             <span class="mx-2">${item.quantity}</span>
                         </td>
-                        <td>${subtotal.toFixed(2)}€</td>
+                        <td>${subtotal.toFixed(2)} €</td>
                         <td></td>
                     </tr>`;
             });
 
-            cartTotal.textContent = totalPrice.toFixed(2);
+            cartTotal.textContent = totalPrice.toFixed(2) + " €";
             cartTotalPrice.textContent = totalPrice.toFixed(2);
             cartItemsCount.textContent = totalItems;
         }

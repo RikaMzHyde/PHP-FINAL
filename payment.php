@@ -1,6 +1,42 @@
 <?php
 session_start();
-// Add any necessary session checks or data retrieval here
+require_once 'api/apiBD.php'; // Incluir el archivo de la base de datos
+
+// echo '<pre>';
+// echo 'Debug variables';
+// var_dump($_SESSION);
+// var_dump($_POST);
+// echo '</pre>';
+// Verificar si se ha iniciado un pago
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
+    $dni = '29057413H';//$_SESSION['usuario_dni']; // DNI del usuario desde la sesión
+    $fecha = date('Y-m-d H:i:s'); // Fecha actual
+    $total = 0;
+    $orderDetails = $_SESSION['cart']; // Ejemplo: ['products' => 2, 'total' => 51.87, 'order_number' => 12345]
+    foreach ($orderDetails as $product) {
+        $total += $product['price'] * $product['quantity'];
+    }
+    // Insertar el pedido en la base de datos
+    $idPedido = insertarPedido($fecha, $total, 'Pendiente', $dni);
+
+    foreach ($orderDetails as $product) {
+        insertarDetallePedido(
+            $idPedido,
+            $product['code'],
+            $product['price'],
+            $product['quantity']
+        );
+    }
+
+
+    // Guardar el ID del pedido en la sesión para usarlo en successful_payment
+    $_SESSION['id_pedido'] = $idPedido;
+    $_SESSION['pago'] = $_POST['pago'];
+
+    // Redirigir al archivo successful_payment
+    header('Location: successful_payment.php');
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -27,21 +63,18 @@ session_start();
                         <a class="nav-link" href="index.php">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Categorías</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Ofertas</a>
+                        <a class="nav-link" href="#">Contacto</a>
                     </li>
                     <a class="nav-link" href="login.php">
                         <i class="bi bi-person"></i> Mi Cuenta
                     </a>
                 </ul>
             </div>
-            <a href="cart.php" class="nav-link ms-3"><i class="bi bi-cart3 fs-4"></i></a>
+            <!-- <a href="cart.php" class="nav-link ms-3"><i class="bi bi-cart3 fs-4"></i></a>
             <div class="cart-summary d-flex align-items-center justify-content-end p-3">
                 <span class="me-3">Items en carrito: <strong id="cart-items-count">2</strong></span>
                 <span>Total: <strong id="cart-total-price">51.87€</strong></span>
-            </div>
+            </div> -->
         </div>
     </nav>
 
@@ -54,11 +87,11 @@ session_start();
                     <div class="card">
                         <div class="card-body">
                             <h4 class="card-title text-center mb-4">Seleccione un Método de Pago</h4>
-                            <form name="tramitarPago" method="post" action="successful_payment.php">
+                            <form name="tramitarPago" method="post" action="payment.php">
                                 <div class="row justify-content-center">
                                     <div class="col-md-3 mb-3">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="pago" id="visa" value="visa" required>
+                                            <input class="form-check-input" type="radio" name="pago" id="visa" value="Visa" required>
                                             <label class="form-check-label" for="visa">
                                                 <img src="imgs\visa.png" alt="Visa" class="img-fluid">
                                             </label>
@@ -66,7 +99,7 @@ session_start();
                                     </div>
                                     <div class="col-md-3 mb-3">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="pago" id="mastercard" value="master" required>
+                                            <input class="form-check-input" type="radio" name="pago" id="mastercard" value="MasterCard" required>
                                             <label class="form-check-label" for="mastercard">
                                                 <img src="imgs\mc.png" alt="Mastercard" class="img-fluid">
                                             </label>
@@ -74,7 +107,7 @@ session_start();
                                     </div>
                                     <div class="col-md-3 mb-3">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="pago" id="american" value="american" required>
+                                            <input class="form-check-input" type="radio" name="pago" id="american" value="AmericanExpress" required>
                                             <label class="form-check-label" for="american">
                                                 <img src="imgs\ae.png" alt="American Express" class="img-fluid">
                                             </label>
@@ -82,7 +115,7 @@ session_start();
                                     </div>
                                     <div class="col-md-3 mb-3">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="pago" id="paypal" value="paypal" required>
+                                            <input class="form-check-input" type="radio" name="pago" id="paypal" value="Paypal" required>
                                             <label class="form-check-label" for="paypal">
                                                 <img src="imgs\pngegg (6).png" alt="PayPal" class="img-fluid">
                                             </label>

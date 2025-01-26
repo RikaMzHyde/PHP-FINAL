@@ -64,7 +64,7 @@ session_start();
             <a href="cart.php" class="nav-link ms-3"><i class="bi bi-cart3 fs-4"></i></a>
             <div class="cart-summary d-flex align-items-center justify-content-end p-3">
                 <span class="me-3">Items en carrito: <strong id="cart-items-count">0</strong></span>
-                <span>Total: $<strong id="cart-total-price">0.00</strong>
+                <span>Total: <strong id="cart-total-price">0.00</strong> €
             </div>
         </div>
     </nav>
@@ -91,7 +91,7 @@ session_start();
                             <tfoot>
                                 <tr>
                                     <td colspan="3" class="text-end fw-bold">TOTAL PEDIDO:</td>
-                                    <td id="total_cart_price" class="fw-bold"><?= $totalPrice ?>€</td>
+                                    <td id="total_cart_price" class="fw-bold"></td>
                                     <td></td>
                                 </tr>
                             </tfoot>
@@ -181,12 +181,12 @@ session_start();
                             <span class="mx-2">${item.quantity}</span>
                             <button class="btn btn-sm btn-outline-secondary increase-quantity" onclick="modifyQuantity('${item.name}', ${item.price}, 'add')">+</button>
                         </td>
-                        <td>${subtotal.toFixed(2)}€</td>
+                        <td>${subtotal.toFixed(2)} €</td>
                         <td><button class="btn btn-sm btn-outline-danger remove-item" onclick="modifyQuantity('${item.name}', ${item.price}, 'clear')" data-id="${item.id}"><i class="bi bi-trash"></i></button></td>
                     </tr>`;
             });
 
-            cartTotal.textContent = totalPrice.toFixed(2);
+            cartTotal.textContent = totalPrice.toFixed(2) + " €";
             cartTotalPrice.textContent = totalPrice.toFixed(2);
             cartItemsCount.textContent = totalItems;
         }

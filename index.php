@@ -29,10 +29,7 @@ session_start();
                         <a class="nav-link active" href="#">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Categorías</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Ofertas</a>
+                        <a class="nav-link" href="#">Contacto</a>
                     </li>
                     <a class="nav-link" href="login.php">
                         <i class="bi bi-person"></i> Mi Cuenta
@@ -42,7 +39,7 @@ session_start();
             <a href="cart.php" class="nav-link ms-3"><i class="bi bi-cart3 fs-4"></i></a>
             <div class="cart-summary d-flex align-items-center justify-content-end p-3">
                 <span class="me-3">Items en carrito: <strong id="cart-items-count">0</strong></span>
-                <span>Total: $<strong id="cart-total-price">0.00</strong></span>
+                <span>Total: <strong id="cart-total-price">0.00</strong> €</span>
             </div>
         </div>
     </nav>
@@ -287,7 +284,7 @@ session_start();
                                         <h5 class='card-title fw-bold'>" . $datos['nombre'] . "</h5>
                                         <p class='card-text product-description'>" . $datos['descripcion'] . "</p>
                                         <p class='card-price fw-bold'>" . $datos['precio'] . "€</p>
-                                        <a href='#' class='btn btn-custom' data-price='" . $datos['precio'] . "'>
+                                        <button onclick=\"addToCart(".$datos['precio'].", '".$datos['nombre']. "', '".$datos['codigo']."')\" class='btn btn-custom' data-price='" . $datos['precio'] . "'>
                                             <i class='bi bi-cart-plus me-2' style='font-size: 1.3em;'></i> Añadir al carrito
                                         </a>
                                     </div>
@@ -413,7 +410,7 @@ session_start();
         }
 
         // Función para añadir un producto al carrito
-        function addToCart(price, name) {
+        function addToCart(price, name, code) {
             fetch('api/carritoApi.php', {
                     method: 'POST',
                     headers: {
@@ -422,7 +419,8 @@ session_start();
                     body: JSON.stringify({
                         action: 'add',
                         price: price,
-                        name: name
+                        name: name,
+                        code: code
                     })
                 })
                 .then(response => response.json())
@@ -432,24 +430,23 @@ session_start();
                 })
                 .catch(error => console.error('Error:', error));
         }
-
-        // Asignar eventos a los botones "Añadir al carrito"
-        document.querySelectorAll('.btn.btn-custom').forEach((button) => {
-            button.addEventListener('click', (event) => {
-                const price = parseFloat(event.target.getAttribute('data-price')); // Obtener el precio desde el atributo data-price
-                const name = event.target.closest('.card-body').querySelector('.card-title').textContent; // Obtener el nombre del producto
-                addToCart(price, name);
-            });
-        });
         async function loadCartFromSession() {
+            let totalPrice = 0;
+            let totalItems = 0;
             try {
                 const response = await fetch('api/carritoApi.php', {
                     method: 'GET'
                 });
                 if (!response.ok) throw new Error('Error al cargar el carrito');
                 const cartData = await response.json();
-                cart.items = cartData.length;
-                cart.totalPrice = cartData.reduce((total, product) => total + product.price, 0);
+                cartData.forEach(item => {
+                    const subtotal = item.price * item.quantity;
+                    totalPrice += subtotal;
+                    totalItems += item.quantity;
+                });
+
+                cart.items = totalItems;
+                cart.totalPrice = totalPrice;
 
                 updateCartView();
             } catch (error) {

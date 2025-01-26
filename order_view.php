@@ -1,7 +1,6 @@
 <?php
 session_start();
-// Aquí deberías incluir la lógica para obtener los datos del pedido desde tu base de datos
-// Por ahora, usaremos datos de ejemplo
+
 $order = [
     'id' => 52,
     'date' => '2025-01-25',
@@ -10,10 +9,10 @@ $order = [
 ];
 $customer = [
     'dni' => '74017237V',
-    'name' => 'aaa aaa',
-    'address' => 'asda',
-    'city' => 'asdasd',
-    'province' => 'asa',
+    'name' => 'Laura',
+    'address' => 'C/ falsa 123',
+    'city' => 'Alicante',
+    'province' => 'Alicante',
     'phone' => '633322112',
     'email' => 'as@ej.com'
 ];
@@ -21,7 +20,7 @@ $orderItems = [
     [
         'line' => 1,
         'code' => 'AAA00030',
-        'description' => 'PAÑUELO SATINADO ESTAMPADO',
+        'description' => 'Galletas Shin Chan Plátano',
         'quantity' => 1,
         'price' => 19.95,
         'discount' => 0,
@@ -53,10 +52,7 @@ $orderItems = [
                         <a class="nav-link" href="index.php">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Categorías</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Ofertas</a>
+                        <a class="nav-link" href="#">Contacto</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="login.php">

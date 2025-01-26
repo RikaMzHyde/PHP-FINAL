@@ -1,9 +1,25 @@
 <?php
 session_start();
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Guardar los datos del formulario en la sesión
+    $_SESSION['user_address'] = [
+        'nombre' => $_POST['nombre'],
+        'apellidos' => $_POST['apellidos'],
+        'direccion' => $_POST['direccion'],
+        'localidad' => $_POST['localidad'],
+        'provincia' => $_POST['provincia'],
+        'telefono' => $_POST['telefono']
+    ];
+
+    // Redirigir a la siguiente página
+    header('Location: payment.php');
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,22 +42,19 @@ session_start();
                         <a class="nav-link" href="index.php">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Categorías</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Ofertas</a>
+                        <a class="nav-link" href="#">Contacto</a>
                     </li>
                     <a class="nav-link" href="login.php">
                         <i class="bi bi-person"></i> Mi Cuenta
                     </a>
                 </ul>
-            </div>
+                <!-- </div>
             <a href="cart.php" class="nav-link ms-3"><i class="bi bi-cart3 fs-4"></i></a>
             <div class="cart-summary d-flex align-items-center justify-content-end p-3">
                 <span class="me-3">Items en carrito: <strong id="cart-items-count">0</strong></span>
                 <span>Total: $<strong id="cart-total-price">0.00</strong></span>
+            </div> -->
             </div>
-        </div>
     </nav>
 
     <main class="py-5">
@@ -49,7 +62,7 @@ session_start();
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title text-center mb-4">Introduzca sus Datos y Dirección de Envío</h4>
-                    <form action="payment.php" method="post">
+                    <form action="user_address.php" method="post">
                         <div class="mb-3">
                             <label for="nombre" class="form-label">Nombre</label>
                             <input type="text" class="form-control" id="nombre" name="nombre" required>
@@ -57,6 +70,12 @@ session_start();
                         <div class="mb-3">
                             <label for="apellidos" class="form-label">Apellidos</label>
                             <input type="text" class="form-control" id="apellidos" name="apellidos" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Correo Electrónico</label>
+                            <input type="email" class="form-control" id="email" name="email"
+                                required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                                title="El correo debe tener un formato válido, como usuario@dominio.com">
                         </div>
                         <div class="mb-3">
                             <label for="direccion" class="form-label">Dirección</label>
@@ -72,7 +91,8 @@ session_start();
                         </div>
                         <div class="mb-3">
                             <label for="telefono" class="form-label">Teléfono</label>
-                            <input type="tel" class="form-control" id="telefono" name="telefono" pattern="[0-9]{9}" title="El teléfono debe tener 9 dígitos" required>
+                            <input type="tel" class="form-control" id="telefono" name="telefono" pattern="[0-9]{9}"
+                                title="El teléfono debe tener 9 dígitos" required>
                         </div>
                         <div class="d-flex justify-content-center mt-4">
                             <button type="submit" class="btn btn-custom">Continuar</button>
@@ -115,8 +135,8 @@ session_start();
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Aquí puedes agregar cualquier JavaScript necesario para actualizar dinámicamente el resumen del carrito
-        // Similar a lo que tienes en tu archivo cart.php
+       
     </script>
 </body>
+
 </html>

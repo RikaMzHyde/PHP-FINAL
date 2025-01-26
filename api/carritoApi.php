@@ -46,9 +46,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($requestPayload['action'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($requestPayload['action'])) {
     switch ($requestPayload['action']) {
         case 'add':
-            if (isset($requestPayload['name'], $requestPayload['price'])) {
+            if (isset($requestPayload['name'], $requestPayload['price'], $requestPayload['code'])) {
                 $name = $requestPayload['name'];
                 $price = $requestPayload['price'];
+                $code = $requestPayload['code'];
 
                 // Asegurar que $_SESSION['cart'] es un array
                 if (!isset($_SESSION['cart'])) {
@@ -71,6 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($requestPayload['action'])) {
                     $_SESSION['cart'][] = [
                         'name' => $name,
                         'price' => $price,
+                        'code' => $code,
                         'quantity' => 1
                     ];
                 }
