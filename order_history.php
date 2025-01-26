@@ -18,52 +18,7 @@ $orders = [
     <title>Amato - Historial de Pedidos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
-    <style>
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background-color: #9f8bc0;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        .navbar,
-        .footer {
-            background-color: #4e4363;
-            color: rgb(80, 255, 203);
-        }
-
-        .btn-custom {
-            background-color: #85b1c5;
-            color: #4e4363;
-            transition: background-color 0.3s;
-        }
-
-        .btn-custom:hover {
-            background-color: rgb(80, 255, 203);
-            color: #4e4363;
-        }
-
-        .txt-custom {
-            color: rgb(80, 255, 203);
-        }
-
-        .card {
-            background-color: #4e4363;
-            border: 1px solid rgb(80, 255, 203);
-            color: rgb(80, 255, 203);
-        }
-
-        .table {
-            color: rgb(80, 255, 203);
-        }
-
-        .table th, .table td {
-            border-color: rgb(80, 255, 203);
-        }
-    </style>
+    <link rel="stylesheet" href="stylesheetcart.css">
 </head>
 <body class="d-flex flex-column min-vh-100">
     <nav class="navbar navbar-expand-lg navbar-dark">
@@ -130,10 +85,34 @@ $orders = [
     </main>
 
     <footer class="footer py-4 mt-auto">
-        <div class="container text-center">
-            <p>&copy; 2024 Amato - Todos los derechos reservados</p>
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-12 col-md-4">
+                    <h5 class="mb-3">Amato</h5>
+                    <p class="small">Tu proveedor de productos de importación Japoneses de confianza 🌸</p>
+                </div>
+                <div class="col-12 col-md-4">
+                    <h5 class="mb-3">Enlaces</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-decoration-none txt-custom">Política de Privacidad</a></li>
+                        <li><a href="#" class="text-decoration-none txt-custom">Términos y Condiciones</a></li>
+                        <li><a href="#" class="text-decoration-none txt-custom">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="col-12 col-md-4">
+                    <h5 class="mb-3">Síguenos</h5>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="txt-custom"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="txt-custom"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="txt-custom"><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
         </div>
     </footer>
+    <div class="py-2 text-center txt-custom small" style="background-color: #4e4363;">
+        © 2024 Amato - Todos los derechos reservados
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

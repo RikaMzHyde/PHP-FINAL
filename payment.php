@@ -11,49 +11,7 @@ session_start();
     <title>Amato - Método de Pago</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
-    <style>
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background-color: #9f8bc0;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        .navbar,
-        .footer {
-            background-color: #4e4363;
-            color: rgb(80, 255, 203);
-        }
-
-        .btn-custom {
-            background-color: #85b1c5;
-            color: #4e4363;
-            transition: background-color 0.3s;
-        }
-
-        .btn-custom:hover {
-            background-color: rgb(80, 255, 203);
-            color: #4e4363;
-        }
-
-        .txt-custom {
-            color: rgb(80, 255, 203);
-        }
-
-        .card {
-            background-color: #4e4363;
-            border: 1px solid rgb(80, 255, 203);
-            color: rgb(80, 255, 203);
-        }
-
-        .form-check-input:checked {
-            background-color: #85b1c5;
-            border-color: #85b1c5;
-        }
-    </style>
+    <link rel="stylesheet" href="stylesheetcart.css">
 </head>
 
 <body class="d-flex flex-column min-vh-100">
@@ -79,7 +37,7 @@ session_start();
                     </a>
                 </ul>
             </div>
-            <a href="cart.php" class="nav-link txt-custom ms-3"><i class="bi bi-cart3 fs-4"></i></a>
+            <a href="cart.php" class="nav-link ms-3"><i class="bi bi-cart3 fs-4"></i></a>
             <div class="cart-summary d-flex align-items-center justify-content-end p-3">
                 <span class="me-3">Items en carrito: <strong id="cart-items-count">2</strong></span>
                 <span>Total: <strong id="cart-total-price">51.87€</strong></span>
@@ -144,21 +102,21 @@ session_start();
 
     <footer class="footer py-4 mt-auto">
         <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5>Amato</h5>
-                    <p>Tu proveedor de productos de importación Japoneses de confianza 🌸</p>
+            <div class="row gy-4">
+                <div class="col-12 col-md-4">
+                    <h5 class="mb-3">Amato</h5>
+                    <p class="small">Tu proveedor de productos de importación Japoneses de confianza 🌸</p>
                 </div>
-                <div class="col-md-4">
-                    <h5>Enlaces</h5>
+                <div class="col-12 col-md-4">
+                    <h5 class="mb-3">Enlaces</h5>
                     <ul class="list-unstyled">
                         <li><a href="#" class="text-decoration-none txt-custom">Política de Privacidad</a></li>
                         <li><a href="#" class="text-decoration-none txt-custom">Términos y Condiciones</a></li>
                         <li><a href="#" class="text-decoration-none txt-custom">Contacto</a></li>
                     </ul>
                 </div>
-                <div class="col-md-4">
-                    <h5>Síguenos</h5>
+                <div class="col-12 col-md-4">
+                    <h5 class="mb-3">Síguenos</h5>
                     <div class="d-flex gap-3">
                         <a href="#" class="txt-custom"><i class="bi bi-facebook"></i></a>
                         <a href="#" class="txt-custom"><i class="bi bi-twitter"></i></a>

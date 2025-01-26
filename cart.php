@@ -11,56 +11,34 @@ session_start();
     <title>Amato - Carrito</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
-    <style>
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background-color: #9f8bc0;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        .navbar,
-        .footer {
-            background-color: #4e4363;
-            color: rgb(80, 255, 203);
-        }
-
-        .btn-custom {
-            background-color: #85b1c5;
-            color: #4e4363;
-            transition: background-color 0.3s;
-        }
-
-        .btn-custom:hover {
-            background-color: rgb(80, 255, 203);
-            color: #4e4363;
-        }
-
-        .txt-custom {
-            color: rgb(80, 255, 203);
-        }
-
-        .card {
-            background-color: #4e4363;
-            border: 1px solid rgb(80, 255, 203);
-            color: rgb(80, 255, 203);
-        }
-
-        .table {
-            color: rgb(80, 255, 203);
-        }
-
-        .table th,
-        .table td {
-            border-color: rgb(80, 255, 203);
-        }
-    </style>
+    <link rel="stylesheet" href="stylesheetcart.css">
 </head>
 
 <body class="d-flex flex-column min-vh-100">
+    <script>
+        const modifyQuantity = (name, price, action) => {
+            fetch('api/carritoApi.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: action,
+                        price: price,
+                        name: name
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        loadCart(); // Recarga la UI del carrito
+                    } else {
+                        alert(data.message || 'Error al modificar la cantidad');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
             <a class="navbar-brand fs-2 fw-bold" href="#">Amato</a>
@@ -83,7 +61,7 @@ session_start();
                     </a>
                 </ul>
             </div>
-            <a href="cart.php" class="nav-link txt-custom ms-3"><i class="bi bi-cart3 fs-4"></i></a>
+            <a href="cart.php" class="nav-link ms-3"><i class="bi bi-cart3 fs-4"></i></a>
             <div class="cart-summary d-flex align-items-center justify-content-end p-3">
                 <span class="me-3">Items en carrito: <strong id="cart-items-count">0</strong></span>
                 <span>Total: $<strong id="cart-total-price">0.00</strong>
@@ -108,37 +86,15 @@ session_start();
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php
-                                $totalPrice = 0;
-                                if (!empty($cart['items'])) {
-                                    foreach ($cart['items'] as $item) {
-                                        $subtotal = $item['price'] * $item['quantity'];
-                                        $totalPrice += $subtotal;
-                                        echo "<tr>
-                                            <td>{$item['name']}</td>
-                                            <td>{$item['price']}€</td>
-                                            <td>
-                                                <button class='btn btn-sm btn-outline-secondary decrease-quantity' data-name='{$item['name']}'>-</button>
-                                                <span class='mx-2'>{$item['quantity']}</span>
-                                                <button class='btn btn-sm btn-outline-secondary increase-quantity' data-name='{$item['name']}'>+</button>
-                                            </td>
-                                            <td>{$subtotal}€</td>
-                                            <td><a href='#' class='btn btn-sm btn-outline-danger remove-item' data-name='{$item['name']}'><i class='bi bi-trash'></i></a></td>
-                                          </tr>";
-                                    }
-                                }
-                                
-                                    
-                                 else {
-                                    echo "<tr><td colspan='5' class='text-center'>No hay productos en el carrito</td></tr>";
-                                }
-                                ?>
+                                <!-- Cargado desde función updateCartUI -->
+                            </tbody>
+                            <tfoot>
                                 <tr>
                                     <td colspan="3" class="text-end fw-bold">TOTAL PEDIDO:</td>
-                                    <td class="fw-bold"><?= $totalPrice ?>€</td>
+                                    <td id="total_cart_price" class="fw-bold"><?= $totalPrice ?>€</td>
                                     <td></td>
                                 </tr>
-                            </tbody>
+                            </tfoot>
                         </table>
                     </div>
                     <div class="d-flex justify-content-center mt-4">
@@ -151,57 +107,36 @@ session_start();
     </main>
 
     <footer class="footer py-4 mt-auto">
-        <div class="container text-center">
-            <p>&copy; 2024 Amato - Todos los derechos reservados</p>
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-12 col-md-4">
+                    <h5 class="mb-3">Amato</h5>
+                    <p class="small">Tu proveedor de productos de importación Japoneses de confianza 🌸</p>
+                </div>
+                <div class="col-12 col-md-4">
+                    <h5 class="mb-3">Enlaces</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-decoration-none txt-custom">Política de Privacidad</a></li>
+                        <li><a href="#" class="text-decoration-none txt-custom">Términos y Condiciones</a></li>
+                        <li><a href="#" class="text-decoration-none txt-custom">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="col-12 col-md-4">
+                    <h5 class="mb-3">Síguenos</h5>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="txt-custom"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="txt-custom"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="txt-custom"><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
         </div>
     </footer>
+    <div class="py-2 text-center txt-custom small" style="background-color: #4e4363;">
+        © 2024 Amato - Todos los derechos reservados
+    </div>
 
     <script>
-        /*function loadCartFromSession() {
-            const cartData = JSON.parse(sessionStorage.getItem('cart')) || {
-                items: []
-            };
-            const cartItemsCount = document.getElementById('cart-items-count');
-            const cartTotalPrice = document.getElementById('cart-total-price');
-
-            let totalItems = 0;
-            let totalPrice = 0;
-
-            cartData.items.forEach(item => {
-                totalItems += item.quantity;
-                totalPrice += item.price * item.quantity;
-            });
-
-            cartItemsCount.textContent = totalItems;
-            cartTotalPrice.textContent = totalPrice.toFixed(2);
-
-            // Update PHP session
-            updatePHPSession(cartData);
-        }
-
-        function updatePHPSession(cartData) {
-            fetch('update_session.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(cartData)
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        console.log('PHP session updated successfully');
-                    } else {
-                        console.error('Failed to update PHP session');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
-
-        // Load cart data when the page loads
-        document.addEventListener('DOMContentLoaded', loadCartFromSession);*/
         async function loadCart() {
             try {
                 const response = await fetch('api/carritoApi.php', { method: 'GET' });
@@ -214,50 +149,48 @@ session_start();
             }
         }
 
-function updateCartUI(cart) {
-    const cartTableBody = document.querySelector('tbody');
-    const cartTotal = document.querySelector('.fw-bold span');
-    let totalPrice = 0;
+        function updateCartUI(cart) {
+            const cartTableBody = document.querySelector('tbody');
+            const cartTotal = document.querySelector('#total_cart_price');
+            const cartItemsCount = document.querySelector('#cart-items-count');
+            const cartTotalPrice = document.querySelector('#cart-total-price');
+            let totalPrice = 0;
+            let totalItems = 0;
 
-    cartTableBody.innerHTML = '';
+            cartTableBody.innerHTML = '';
 
-    if (cart.length === 0) {
-        cartTableBody.innerHTML = '<tr><td colspan="5" class="text-center">No hay productos en el carrito</td></tr>';
-        cartTotal.textContent = '0.00';
-        return;
-    }
+            if (cart.length === 0) {
+                cartTableBody.innerHTML = '<tr><td colspan="5" class="text-center">No hay productos en el carrito</td></tr>';
+                cartTotal.textContent = '0.00';
+                cartTotalPrice.textContent = '0.00';
+                cartItemsCount.textContent = '0';
+                return;
+            }
 
-    cart.forEach(item => {
-        const subtotal = item.price * item.quantity;
-        totalPrice += subtotal;
+            cart.forEach(item => {
+                const subtotal = item.price * item.quantity;
+                totalPrice += subtotal;
+                totalItems += item.quantity;
 
-        cartTableBody.innerHTML += `
-            <tr>
-                <td>${item.name}</td>
-                <td>${item.price}€</td>
-                <td>
-                    <button class="btn btn-sm btn-outline-secondary decrease-quantity" data-id="${item.id}">-</button>
-                    <span class="mx-2">${item.quantity}</span>
-                    <button class="btn btn-sm btn-outline-secondary increase-quantity" data-id="${item.id}">+</button>
-                </td>
-                <td>${subtotal.toFixed(2)}€</td>
-                <td><button class="btn btn-sm btn-outline-danger remove-item" data-id="${item.id}"><i class="bi bi-trash"></i></button></td>
-            </tr>`;
-    });
+                cartTableBody.innerHTML += `
+                    <tr>
+                        <td>${item.name}</td>
+                        <td>${item.price}€</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-secondary decrease-quantity" onclick="modifyQuantity('${item.name}', ${item.price}, 'remove')">-</button>
+                            <span class="mx-2">${item.quantity}</span>
+                            <button class="btn btn-sm btn-outline-secondary increase-quantity" onclick="modifyQuantity('${item.name}', ${item.price}, 'add')">+</button>
+                        </td>
+                        <td>${subtotal.toFixed(2)}€</td>
+                        <td><button class="btn btn-sm btn-outline-danger remove-item" onclick="modifyQuantity('${item.name}', ${item.price}, 'clear')" data-id="${item.id}"><i class="bi bi-trash"></i></button></td>
+                    </tr>`;
+            });
 
-    cartTotal.textContent = totalPrice.toFixed(2);
-}
-loadCart();
-
-        function removeFromCart(name) {
-            let cartData = JSON.parse(sessionStorage.getItem('cart')) || {
-                items: []
-            };
-            cartData.items = cartData.items.filter(item => item.name !== name);
-            sessionStorage.setItem('cart', JSON.stringify(cartData));
-            loadCartFromSession();
-            location.reload(); // Reload the page to reflect changes
+            cartTotal.textContent = totalPrice.toFixed(2);
+            cartTotalPrice.textContent = totalPrice.toFixed(2);
+            cartItemsCount.textContent = totalItems;
         }
+        loadCart();
 
         // Add event listeners to remove buttons
         document.querySelectorAll('.remove-item').forEach(button => {
@@ -267,35 +200,6 @@ loadCart();
                 removeFromCart(name);
             });
         });
-
-        document.addEventListener('DOMContentLoaded', () => {
-        const updateQuantity = (name, change) => {
-            let cartData = JSON.parse(sessionStorage.getItem('cart')) || { items: [] };
-            cartData.items = cartData.items.map(item => {
-                if (item.name === name) {
-                    item.quantity = Math.max(1, item.quantity + change); // Evitar cantidad menor a 1
-                }
-                return item;
-            });
-            sessionStorage.setItem('cart', JSON.stringify(cartData));
-            updatePHPSession(cartData);
-            location.reload(); // Recargar para reflejar cambios
-        };
-
-        document.querySelectorAll('.increase-quantity').forEach(button => {
-            button.addEventListener('click', (event) => {
-                const name = event.target.closest('.increase-quantity').getAttribute('data-name');
-                updateQuantity(name, 1);
-            });
-        });
-
-        document.querySelectorAll('.decrease-quantity').forEach(button => {
-            button.addEventListener('click', (event) => {
-                const name = event.target.closest('.decrease-quantity').getAttribute('data-name');
-                updateQuantity(name, -1);
-            });
-        });
-    });
     </script>
 </body>
 

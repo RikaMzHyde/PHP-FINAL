@@ -17,32 +17,122 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($requestPayload['action'])) {
+    if ($requestPayload['action'] === 'updateQuantity' && isset($requestPayload['name'], $requestPayload['change'])) {
+        $name = $requestPayload['name'];
+        $change = (int)$requestPayload['change'];
+
+        // Obtener el carrito de la sesión
+        $cart = $_SESSION['cart'] ?? ['items' => []];
+
+        foreach ($cart['items'] as &$item) {
+            if ($item['name'] === $name) {
+                $item['quantity'] = max(1, $item['quantity'] + $change); // No permitir menos de 1
+                break;
+            }
+        }
+
+        // Actualizar el carrito en la sesión
+        $_SESSION['cart'] = $cart;
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'Cantidad actualizada correctamente.',
+            'cart' => $cart
+        ]);
+        exit;
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($requestPayload['action'])) {
     switch ($requestPayload['action']) {
         case 'add':
-            // Crear producto desde el cuerpo de la solicitud
-            $product = [
-                'name' => $requestPayload['name'],
-                'price' => $requestPayload['price'],
-                'quantity' => 1
-            ];
+            if (isset($requestPayload['name'], $requestPayload['price'])) {
+                $name = $requestPayload['name'];
+                $price = $requestPayload['price'];
 
-            // Asegurarte de que $_SESSION['cart'] es un array
-            if (!is_array($_SESSION['cart'])) {
-                $_SESSION['cart'] = [];
+                // Asegurar que $_SESSION['cart'] es un array
+                if (!isset($_SESSION['cart'])) {
+                    $_SESSION['cart'] = [];
+                }
+
+                $itemFound = false;
+
+                // Buscar si el producto ya existe en el carrito
+                foreach ($_SESSION['cart'] as &$item) {
+                    if ($item['name'] === $name) {
+                        $item['quantity'] += 1; // Incrementar la cantidad
+                        $itemFound = true;
+                        break;
+                    }
+                }
+
+                // Si el producto no está en el carrito, añadirlo
+                if (!$itemFound) {
+                    $_SESSION['cart'][] = [
+                        'name' => $name,
+                        'price' => $price,
+                        'quantity' => 1
+                    ];
+                }
+
+                echo json_encode( ['success' => true, 'message' => 'Cantidad incrementada', 'cart' => $_SESSION['cart']]);
+            } else {
+                echo json_encode(['error' => 'Faltan parámetros para agregar']);
             }
+            break;
 
-            // Añadir el producto al carrito
-            $_SESSION['cart'][] = $product;
+        case 'remove':
+            if (isset($requestPayload['name'])) {
+                $name = $requestPayload['name'];
 
-            echo json_encode(['message' => 'Producto añadido al carrito', 'cart' => $_SESSION['cart']]);
+                // Asegurar que $_SESSION['cart'] es un array
+                if (!isset($_SESSION['cart'])) {
+                    $_SESSION['cart'] = [];
+                }
+
+                foreach ($_SESSION['cart'] as $index => &$item) {
+                    if ($item['name'] === $name) {
+                        $item['quantity'] -= 1; // Decrementar la cantidad
+                        if ($item['quantity'] <= 0) {
+                            unset($_SESSION['cart'][$index]); // Eliminar si la cantidad es 0
+                        }
+                        break;
+                    }
+                }
+
+                // Reindexar el array para evitar huecos en los índices
+                $_SESSION['cart'] = array_values($_SESSION['cart']);
+
+                echo json_encode(['success' => true, 'message' => 'Cantidad decrementada', 'cart' => $_SESSION['cart']]);
+            } else {
+                echo json_encode(['error' => 'Faltan parámetros para eliminar']);
+            }
             break;
 
         case 'clear':
-            // Limpiar el carrito
-            $_SESSION['cart'] = [];
-            echo json_encode(['message' => 'Carrito limpiado', 'cart' => $_SESSION['cart']]);
-            break;
+            if (isset($requestPayload['name'])) {
+                $name = $requestPayload['name'];
 
+                // Asegurar que $_SESSION['cart'] es un array
+                if (!isset($_SESSION['cart'])) {
+                    $_SESSION['cart'] = [];
+                }
+
+                foreach ($_SESSION['cart'] as $index => &$item) {
+                    if ($item['name'] === $name) {
+                        unset($_SESSION['cart'][$index]); 
+                        break;
+                    }
+                }
+
+                // Reindexar el array para evitar huecos en los índices
+                $_SESSION['cart'] = array_values($_SESSION['cart']);
+
+                echo json_encode(['success' => true, 'message' => 'Cantidad decrementada', 'cart' => $_SESSION['cart']]);
+            } else {
+                echo json_encode(['error' => 'Faltan parámetros para eliminar']);
+            }
+            break;
         default:
             echo json_encode(['error' => 'Acción no válida']);
             break;

@@ -86,3 +86,48 @@ body {
     text-overflow: ellipsis;
     /* Añade "..." si el texto es más largo */
 }
+
+.table {
+    color: rgb(80, 255, 203);
+}
+
+.table th,
+.table td {
+    border-color: rgb(80, 255, 203);
+}
+
+.form-control {
+    background-color: #9f8bc0;
+    color: #4e4363;
+    border-color: rgb(80, 255, 203);
+}
+
+.form-control::placeholder {
+    color: #4e4363;
+}
+
+.form-check-input:checked {
+    background-color: #85b1c5;
+    border-color: #85b1c5;
+}
+
+.accordion-button {
+    background-color: #4e4363;
+    color: rgb(80, 255, 203);
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #85b1c5;
+    color: #4e4363;
+}
+
+.list-group-item {
+    background-color: #4e4363;
+    color: rgb(80, 255, 203);
+    border-color: rgb(80, 255, 203);
+}
+
+.list-group-item:hover {
+    background-color: #85b1c5;
+    color: #4e4363;
+}
