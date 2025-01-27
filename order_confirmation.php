@@ -1,5 +1,5 @@
 <?php
-session_start();
+require("functions/security.php");
 ?>
 
 <!DOCTYPE html>

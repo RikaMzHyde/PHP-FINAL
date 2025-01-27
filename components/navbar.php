@@ -13,8 +13,9 @@
                     <a class="nav-link" href="#">Contacto</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="login.php">
-                        <i class="bi bi-person"></i> Mi Cuenta
+                    <a class="nav-link" href="<?= isset($_SESSION["dni"]) && !empty($_SESSION["dni"]) ? 'user_session.php' : 'login.php' ?>">
+                        <i class="bi bi-person"></i> 
+                        <?= isset($_SESSION["dni"]) && !empty($_SESSION["dni"]) ? 'Mi Cuenta' : 'Iniciar sesión' ?>
                     </a>
                 </li>
             </ul>
@@ -27,6 +28,44 @@
     </div>
 </nav>
 <script>
+    
+        
+        // Estado inicial del carrito
+        let cart = {
+            items: 0,
+            totalPrice: 0,
+        };
+
+        // Función para actualizar la vista del carrito
+        function updateCartView() {
+            // Actualizar la cantidad de items en el carrito y el precio total
+            document.getElementById('cart-items-count').textContent = cart.items;
+            document.getElementById('cart-total-price').textContent = cart.totalPrice.toFixed(2);
+        }
+        async function loadCartFromSession() {
+            let totalPrice = 0;
+            let totalItems = 0;
+            try {
+                const response = await fetch('api/carritoApi.php', {
+                    method: 'GET'
+                });
+                if (!response.ok) throw new Error('Error al cargar el carrito');
+                const cartData = await response.json();
+                cartData.forEach(item => {
+                    const subtotal = item.price * item.quantity;
+                    totalPrice += subtotal;
+                    totalItems += item.quantity;
+                });
+
+                cart.items = totalItems;
+                cart.totalPrice = totalPrice;
+
+                updateCartView();
+            } catch (error) {
+                console.error('Error al cargar el carrito:', error);
+            }
+        }
+
     document.addEventListener('DOMContentLoaded', () => {
         const currentPage = window.location.pathname.split('/').pop();
         const navLinks = document.querySelectorAll('.nav-link');
@@ -41,5 +80,10 @@
                 document.getElementById("cart-summary").remove();
             }
         })
+
+        loadCartFromSession();
+        
     });
+
+    
 </script>

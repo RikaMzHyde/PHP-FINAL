@@ -1,6 +1,6 @@
 <?php
 include("connect.php");
-include("security.php");
+include("functions/security.php");
 include("user_class.php");
 
 //Comprobamos si el usuario está autenticado, si no hay sesión iniciada, lo redirigimos al login

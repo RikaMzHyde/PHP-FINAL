@@ -1,6 +1,6 @@
 <?php
 include("connect.php");
-include("security.php");
+include("functions/security.php");
 include("user_class.php");
 
 //Verificamos si se ha proporcionado un DNI para saber qué usuario se va a modificar

@@ -1,5 +1,7 @@
 <?php
 session_start();
+require("functions/security.php");
+
 require_once 'api/apiBD.php'; // Incluir el archivo de la base de datos
 
 // echo '<pre>';

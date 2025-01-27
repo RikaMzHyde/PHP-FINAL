@@ -1,5 +1,6 @@
 <?php
 session_start();
+require("functions/security.php");
 
 // Verifica si los datos necesarios existen en la sesión
 if (!isset($_SESSION['order_details'], $_SESSION['user_address'], $_SESSION['payment_info'])) {

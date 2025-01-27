@@ -41,10 +41,12 @@ html, body {
 
 .card-title {
     color:rgb(80, 255, 203);
+    min-height: 50px;
 }
 
 .card-price {
     color:rgb(80, 255, 203);
+    align-self: center;
 }
 
 .row.d-flex {

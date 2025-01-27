@@ -1,6 +1,6 @@
 <?php
 include("connect.php");
-include("security.php");
+include("functions/security.php");
 include("user_class.php");
 
 //Verificamos si la sesión contiene el DNI
@@ -21,6 +21,15 @@ if (isset($_SESSION["dni"]) && !empty($_SESSION["dni"])) {
             $telefono = $usuarioSesion->getTelefono();
             $email = $usuarioSesion->getEmail();
             $password = $usuarioSesion->getPassword();
+
+            $_SESSION['user_address'] = [
+                'nombre' => $nombre,
+                'direccion' => $direccion,
+                'localidad' => $localidad,
+                'provincia' => $provincia,
+                'telefono' => $telefono,
+                'email' => $email
+            ];
         } else {
             echo "Error: No se pudo obtener el usuario con el DNI proporcionado.";
             exit();
@@ -43,12 +52,14 @@ $mensajeExito = isset($_GET["mensaje"]) && $_GET["mensaje"] === "exito";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="stylesheet.css">
-    <title>Ejercicio PDO</title>
+    <title>Amato - Sesión</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="stylesheetcart.css">
 </head>
 
 <body>
-
+    <?php require('components/navbar.php'); ?>
     <div class="vh-center">
         <div id="contenedor">
             <div id="datosmostrados">
@@ -76,7 +87,6 @@ $mensajeExito = isset($_GET["mensaje"]) && $_GET["mensaje"] === "exito";
             </div>
 
             <div id="login">
-                <h2 class="titulo">¿Qué necesitas?</h2>
                 <div class="footer">
                     <form action="delete_user.php" method="get">
                         <button type="submit" id="autoeliminado" class="btn">Eliminar Datos</button>
@@ -86,10 +96,6 @@ $mensajeExito = isset($_GET["mensaje"]) && $_GET["mensaje"] === "exito";
                         <button type="submit" id="automodificado" class="btn">Modificar Datos</button>
                     </form>
 
-                    <form action="user_articles.php" method="get">
-                        <button type="submit" id="articulosusu" class="btn">Ver Artículos</button>
-                    </form>
-
                     <form action="logout.php" method="get">
                         <button type="submit" id="logout" class="btn">Cerrar Sesión</button>
                     </form>
@@ -97,6 +103,7 @@ $mensajeExito = isset($_GET["mensaje"]) && $_GET["mensaje"] === "exito";
             </div>
         </div>
     </div>
+    <?php require('components/footer.php'); ?>
 </body>
 
 </html>

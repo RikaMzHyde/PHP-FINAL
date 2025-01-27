@@ -258,10 +258,13 @@ session_start();
                                     <div class='card-body'>
                                         <h5 class='card-title fw-bold'>" . $datos['nombre'] . "</h5>
                                         <p class='card-text product-description'>" . $datos['descripcion'] . "</p>
-                                        <p class='card-price fw-bold'>" . $datos['precio'] . "€</p>
-                                        <button onclick=\"addToCart(".$datos['precio'].", '".$datos['nombre']. "', '".$datos['codigo']."')\" class='btn btn-custom' data-price='" . $datos['precio'] . "'>
-                                            <i class='bi bi-cart-plus me-2' style='font-size: 1.3em;'></i> Añadir al carrito
-                                        </a>
+                                        <div class='d-inline-flex'>
+                                            <button onclick=\"addToCart(".$datos['precio'].", '".$datos['nombre']. "', '".$datos['codigo']."')\" class='btn btn-custom' data-price='" . $datos['precio'] . "'>
+                                                <i class='bi bi-cart-plus me-2' style='font-size: 1.3em;'></i> Añadir al carrito
+                                            </button>
+                                            <div class='card-price fw-bold ms-3'>" . $datos['precio'] . "€</div>
+                                        </div>
+                                        
                                     </div>
                                 </div>
                             </div>";
@@ -341,18 +344,6 @@ session_start();
     <?php require('components/footer.php'); ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Estado inicial del carrito
-        let cart = {
-            items: 0,
-            totalPrice: 0,
-        };
-
-        // Función para actualizar la vista del carrito
-        function updateCartView() {
-            // Actualizar la cantidad de items en el carrito y el precio total
-            document.getElementById('cart-items-count').textContent = cart.items;
-            document.getElementById('cart-total-price').textContent = cart.totalPrice.toFixed(2);
-        }
 
         // Función para añadir un producto al carrito
         function addToCart(price, name, code) {
@@ -375,30 +366,6 @@ session_start();
                 })
                 .catch(error => console.error('Error:', error));
         }
-        async function loadCartFromSession() {
-            let totalPrice = 0;
-            let totalItems = 0;
-            try {
-                const response = await fetch('api/carritoApi.php', {
-                    method: 'GET'
-                });
-                if (!response.ok) throw new Error('Error al cargar el carrito');
-                const cartData = await response.json();
-                cartData.forEach(item => {
-                    const subtotal = item.price * item.quantity;
-                    totalPrice += subtotal;
-                    totalItems += item.quantity;
-                });
-
-                cart.items = totalItems;
-                cart.totalPrice = totalPrice;
-
-                updateCartView();
-            } catch (error) {
-                console.error('Error al cargar el carrito:', error);
-            }
-        }
-        loadCartFromSession();
     </script>
 </body>
 

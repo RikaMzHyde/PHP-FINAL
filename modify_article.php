@@ -1,6 +1,6 @@
 <?php
 include("connect.php");
-include("security.php");
+include("functions/security.php");
 include("article_class.php");
 
 if (isset($_GET["codigo"])) {

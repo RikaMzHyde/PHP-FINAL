@@ -1,5 +1,7 @@
 <?php
 session_start();
+require("functions/security.php");
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Guardar los datos del formulario en la sesión
     $_SESSION['user_address'] = [
@@ -14,6 +16,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Redirigir a la siguiente página
     header('Location: payment.php');
     exit;
+}
+
+function getAddressValue($fname){
+    if (isset($_SESSION['user_address']) && isset($_SESSION['user_address'][$fname]) && !empty($_SESSION['user_address'][$fname])) {
+        return $_SESSION['user_address'][$fname];
+    } else {
+        return '';
+    }
 }
 ?>
 
@@ -39,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <form action="user_address.php" method="post">
                         <div class="mb-3">
                             <label for="nombre" class="form-label">Nombre</label>
-                            <input type="text" class="form-control" id="nombre" name="nombre" required>
+                            <input type="text" class="form-control" id="nombre" name="nombre" value="<?= getAddressValue('nombre') ?>" required>
                         </div>
                         <div class="mb-3">
                             <label for="apellidos" class="form-label">Apellidos</label>
@@ -49,24 +59,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <label for="email" class="form-label">Correo Electrónico</label>
                             <input type="email" class="form-control" id="email" name="email"
                                 required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                                 value="<?= getAddressValue('email') ?>"
                                 title="El correo debe tener un formato válido, como usuario@dominio.com">
                         </div>
                         <div class="mb-3">
                             <label for="direccion" class="form-label">Dirección</label>
-                            <input type="text" class="form-control" id="direccion" name="direccion" required>
+                            <input type="text" class="form-control" id="direccion" name="direccion" value="<?= getAddressValue('direccion') ?>" required>
                         </div>
                         <div class="mb-3">
                             <label for="localidad" class="form-label">Localidad</label>
-                            <input type="text" class="form-control" id="localidad" name="localidad" required>
+                            <input type="text" class="form-control" id="localidad" name="localidad" value="<?= getAddressValue('localidad') ?>" required>
                         </div>
                         <div class="mb-3">
                             <label for="provincia" class="form-label">Provincia</label>
-                            <input type="text" class="form-control" id="provincia" name="provincia" required>
+                            <input type="text" class="form-control" id="provincia" name="provincia" value="<?= getAddressValue('provincia') ?>" required>
                         </div>
                         <div class="mb-3">
                             <label for="telefono" class="form-label">Teléfono</label>
                             <input type="tel" class="form-control" id="telefono" name="telefono" pattern="[0-9]{9}"
-                                title="El teléfono debe tener 9 dígitos" required>
+                                title="El teléfono debe tener 9 dígitos"  value="<?= getAddressValue(fname: 'telefono') ?>" required>
                         </div>
                         <div class="d-flex justify-content-center mt-4">
                             <button type="submit" class="btn btn-custom">Continuar</button>

@@ -1,6 +1,6 @@
 <?php
 include("connect.php");
-include("security.php");
+include("functions/security.php");
 include("user_class.php");
 
 //Verificamos si hay un mensaje de éxito o eliminación con GET

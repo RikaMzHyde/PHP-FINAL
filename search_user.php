@@ -1,6 +1,6 @@
 <?php
 include("user_class.php");
-include("security.php");
+include("functions/security.php");
 
 $msg = "";
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
