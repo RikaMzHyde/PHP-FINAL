@@ -1,5 +1,5 @@
 <?php
-include("connect.php");
+require_once("connect.php");
 include("functions/security.php");
 include("user_class.php");
 
@@ -59,7 +59,7 @@ $mensajeExito = isset($_GET["mensaje"]) && $_GET["mensaje"] === "exito";
 </head>
 
 <body>
-    <?php require('components/navbar.php'); ?>
+    <?php require('navbar.php'); ?>
     <div class="vh-center">
         <div id="contenedor">
             <div id="datosmostrados">
@@ -103,7 +103,7 @@ $mensajeExito = isset($_GET["mensaje"]) && $_GET["mensaje"] === "exito";
             </div>
         </div>
     </div>
-    <?php require('components/footer.php'); ?>
+    <?php require('footer.php'); ?>
 </body>
 
 </html>

@@ -3,7 +3,7 @@ session_start();
 require("functions/security.php");
 
 // Verifica si los datos necesarios existen en la sesión
-if (!isset($_SESSION['order_details'], $_SESSION['user_address'], $_SESSION['payment_info'])) {
+if (!isset($_SESSION['order_details'], $_SESSION['user_address'], $_SESSION['payment_info'], $_SESSION['nombre'])) {
     // Redirigir a una página de error o a la página de inicio si faltan datos
 //     echo '<pre>';
 //     echo 'Debug variables';
@@ -15,10 +15,11 @@ if (!isset($_SESSION['order_details'], $_SESSION['user_address'], $_SESSION['pay
 }
 
 // Datos del pedido
-$orderDetails = $_SESSION['cart']; // Ejemplo: ['products' => 2, 'total' => 51.87, 'order_number' => 12345]
-
+$orderDetails = $_SESSION['cart'];
 // Dirección del usuario
-$userAddress = $_SESSION['user_address']; // Ejemplo: ['name' => 'Laura', 'address' => 'Calle Falsa 123', 'city' => 'Madrid', 'zip' => '28001']
+$userAddress = $_SESSION['user_address'];
+var_dump($userAddress);
+
 
 // Información del pago
 $paymentInfo = '';
@@ -38,7 +39,7 @@ $paymentInfo = $_SESSION['pago']
 </head>
 
 <body class="d-flex flex-column min-vh-100">    
-    <?php require('components/navbar.php'); ?>
+    <?php require('navbar.php'); ?>
     <main class="flex-grow-1 py-5">
         <div class="container">
             <div class="row">
@@ -51,6 +52,9 @@ $paymentInfo = $_SESSION['pago']
                                 // Verificar si el pago fue exitoso y el ID del pedido está disponible
                                 if (isset($_SESSION['id_pedido'])) {
                                     $idPedido = $_SESSION['id_pedido'];
+                            
+                                 $_SESSION['pedido_completado'] = true;
+
                             ?>
                     <h2 class="card-title text-center mb-4">¡Pedido Realizado con Éxito!</h2>
                             <div class="alert alert-success" role="alert">
@@ -93,7 +97,7 @@ $paymentInfo = $_SESSION['pago']
         </div>
     </main>
 
-    <?php require('components/footer.php'); ?>
+    <?php require('footer.php'); ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

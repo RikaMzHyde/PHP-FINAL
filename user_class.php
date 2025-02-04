@@ -109,7 +109,7 @@ class Usuario
     //Function para sacar todos los datos del usuario a partir del DNI 
     public static function obtenerUsuarioDNI($dni)
     {
-        include("connect.php");
+        require_once("connect.php");
         $conn = conectar_db();
 
         if ($conn) {
@@ -149,7 +149,7 @@ class Usuario
     //Function para login
     public static function login($dni, $password)
     {
-        include("connect.php");
+        require_once("connect.php");
         $conn = conectar_db();
         if ($conn) {
             try {
@@ -190,7 +190,7 @@ class Usuario
     //Function para registrar nuevos usuarios
     public static function registrarUsuario($dni, $nombre, $direccion, $localidad, $provincia, $telefono, $email, $password, $admin, $editor)
     {
-        include("connect.php");
+        require_once("connect.php");
         $conn = conectar_db();
         $hashNuevoPwd = password_hash($password, PASSWORD_DEFAULT);
 
@@ -235,7 +235,7 @@ class Usuario
     //Function para saber si ya existe el usuario en la BD
     private static function existeUsuario($dni)
     {
-        include("connect.php");
+        require_once("connect.php");
         $conn = conectar_db();
 
         if ($conn) {
@@ -260,7 +260,7 @@ class Usuario
     //Function para eliminar usuario por DNI
     public static function eliminarUsuario($dni)
     {
-        include("connect.php");
+        require_once("connect.php");
         $conn = conectar_db();
 
         if ($conn) {
@@ -286,7 +286,7 @@ class Usuario
     //Function para modificar usuario
     public static function modificarUsuario($dni, $nombre, $direccion, $localidad, $provincia, $telefono, $email, $password, $admin, $editor)
     {
-        include("connect.php");
+        require_once("connect.php");
         $conn = conectar_db();
         if($password != null)
             $hashNuevoPwd = password_hash($password, PASSWORD_DEFAULT);
@@ -329,7 +329,7 @@ class Usuario
     public function modificarPassword($nuevoPwd) {
         $hashNuevoPwd = password_hash($nuevoPwd, PASSWORD_DEFAULT);
 
-        include("connect.php");
+        require_once("connect.php");
 
         $conn = conectar_db();
 

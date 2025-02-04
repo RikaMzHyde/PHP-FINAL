@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json'); // Respuesta en JSON
 session_start(); // Inicia la sesión
+require_once('apiBD.php');
 
 // Inicializar el carrito si no existe
 if (!isset($_SESSION['cart'])) {
@@ -12,10 +13,16 @@ $requestPayload = json_decode(file_get_contents('php://input'), true);
 
 // Rutas de la API
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    echo json_encode($_SESSION['cart'] ?? ['items' => []]);
+    $cartItems = [];
+    //echo json_encode($_SESSION['cart'] ?? ['items' => []]);
+    $codes = array_column($_SESSION['cart'], 'code');
+    $quantityMap = array_column($_SESSION['cart'], 'quantity', 'code');
+    $placeholders = str_repeat('?,', count($codes) - 1) . '?';
+    $cartItems = getCartItems($codes, $quantityMap, $placeholders);
+    echo json_encode(value: $cartItems ?? ['items' => []]);
     exit;
 }
-
+/*
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($requestPayload['action'])) {
     if ($requestPayload['action'] === 'updateQuantity' && isset($requestPayload['name'], $requestPayload['change'])) {
         $name = $requestPayload['name'];
@@ -41,14 +48,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($requestPayload['action'])) {
         ]);
         exit;
     }
-}
+}*/
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($requestPayload['action'])) {
     switch ($requestPayload['action']) {
         case 'add':
-            if (isset($requestPayload['name'], $requestPayload['price'], $requestPayload['code'])) {
-                $name = $requestPayload['name'];
-                $price = $requestPayload['price'];
+            if (isset($requestPayload['code'])) {
                 $code = $requestPayload['code'];
 
                 // Asegurar que $_SESSION['cart'] es un array
@@ -60,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($requestPayload['action'])) {
 
                 // Buscar si el producto ya existe en el carrito
                 foreach ($_SESSION['cart'] as &$item) {
-                    if ($item['name'] === $name) {
+                    if ($item['code'] === $code) {
                         $item['quantity'] += 1; // Incrementar la cantidad
                         $itemFound = true;
                         break;
@@ -70,8 +75,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($requestPayload['action'])) {
                 // Si el producto no está en el carrito, añadirlo
                 if (!$itemFound) {
                     $_SESSION['cart'][] = [
-                        'name' => $name,
-                        'price' => $price,
                         'code' => $code,
                         'quantity' => 1
                     ];
@@ -84,8 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($requestPayload['action'])) {
             break;
 
         case 'remove':
-            if (isset($requestPayload['name'])) {
-                $name = $requestPayload['name'];
+            if (isset($requestPayload['code'])) {
+                $code = $requestPayload['code'];
 
                 // Asegurar que $_SESSION['cart'] es un array
                 if (!isset($_SESSION['cart'])) {
@@ -93,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($requestPayload['action'])) {
                 }
 
                 foreach ($_SESSION['cart'] as $index => &$item) {
-                    if ($item['name'] === $name) {
+                    if ($item['code'] === $code) {
                         $item['quantity'] -= 1; // Decrementar la cantidad
                         if ($item['quantity'] <= 0) {
                             unset($_SESSION['cart'][$index]); // Eliminar si la cantidad es 0
@@ -112,8 +115,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($requestPayload['action'])) {
             break;
 
         case 'clear':
-            if (isset($requestPayload['name'])) {
-                $name = $requestPayload['name'];
+            if (isset($requestPayload['code'])) {
+                $code = $requestPayload['code'];
 
                 // Asegurar que $_SESSION['cart'] es un array
                 if (!isset($_SESSION['cart'])) {
@@ -121,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($requestPayload['action'])) {
                 }
 
                 foreach ($_SESSION['cart'] as $index => &$item) {
-                    if ($item['name'] === $name) {
+                    if ($item['code'] === $code) {
                         unset($_SESSION['cart'][$index]); 
                         break;
                     }

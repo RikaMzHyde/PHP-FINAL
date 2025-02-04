@@ -1,8 +1,21 @@
 <?php
 session_start();
+require("functions/security.php");
+require_once 'apiBD.php';
 
 $orderId = $_GET['id'] ?? null;
-$orderDate = '2025-01-25'; // Este dato debería venir de la base de datos
+$orderDate = $_GET['date'] ?? null;
+
+if (isset($_GET['cancelar']) && $_GET['cancelar'] === 'si' && $orderId) {
+    if (cancelarPedido($orderId)) {
+        $_SESSION['mensaje'] = "Pedido cancelado con éxito";
+    } else {
+        $_SESSION['mensaje'] = "No se pudo cancelar el pedido / Pedido ya cancelado.";
+    }
+    header("Location: order_history.php");
+    exit();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -16,7 +29,7 @@ $orderDate = '2025-01-25'; // Este dato debería venir de la base de datos
     <link rel="stylesheet" href="stylesheetcart.css">
 </head>
 <body class="d-flex flex-column min-vh-100">
-    <?php require('components/navbar.php'); ?>
+    <?php require('navbar.php'); ?>
 
     <main class="flex-grow-1 py-5">
         <div class="container">
@@ -29,8 +42,8 @@ $orderDate = '2025-01-25'; // Este dato debería venir de la base de datos
                             <p>Número: <?php echo htmlspecialchars($orderId); ?></p>
                             <p>Fecha: <?php echo htmlspecialchars($orderDate); ?></p>
                             <div class="mt-4">
-                                <a href="cancelarPedido.php?cancelar=si&id=<?php echo htmlspecialchars($orderId); ?>&zona=1" class="btn btn-custom me-2">Aceptar</a>
-                                <a href="pedidosUser.php?zona=1" class="btn btn-custom">Cancelar</a>
+                            <a href="order_cancel.php?cancelar=si&id=<?php echo htmlspecialchars($orderId); ?>" class="btn btn-custom me-2">Aceptar</a>
+                            <a href="order_history.php" class="btn btn-custom">Cancelar</a>
                             </div>
                         </div>
                     </div>
@@ -39,7 +52,7 @@ $orderDate = '2025-01-25'; // Este dato debería venir de la base de datos
         </div>
     </main>
 
-    <?php require('components/footer.php'); ?>
+    <?php require('footer.php'); ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

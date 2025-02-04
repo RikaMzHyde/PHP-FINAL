@@ -1,32 +1,36 @@
 <?php
 session_start();
+require("functions/security.php");
+require_once 'apiBD.php';
+include("user_class.php");
+
+$dniCliente = $_SESSION['dni'];
+$idPedido = $_GET['numero_pedido'];
+
+$usuarioSesion = Usuario::obtenerUsuarioDNI($dniCliente);
+
+//Verificamos si el usuario se ha obtenido correctamente
+if ($usuarioSesion) {
+    // Construimos el array $customer con los datos del usuario
+    $customer = [
+        'dni' => $dniCliente ?? '',
+        'nombre' => $usuarioSesion->getNombre(),
+        'direccion' => $usuarioSesion->getDireccion(),
+        'localidad' => $usuarioSesion->getLocalidad(),
+        'provincia' => $usuarioSesion->getProvincia(),
+        'telefono' => $usuarioSesion->getTelefono(),
+        'email' => $usuarioSesion->getEmail(),
+    ];
+}
 
 $order = [
-    'id' => 52,
-    'date' => '2025-01-25',
-    'total' => 19.95,
-    'status' => 'Creado'
+    'numero_pedido' => $_GET['numero_pedido'] ?? '',
+    'fecha' => $_GET['fecha'] ?? '',
+    'total' => $_GET['total'] ?? '',
+    'estado' => $_GET['estado'] ?? '',
 ];
-$customer = [
-    'dni' => '74017237V',
-    'name' => 'Laura',
-    'address' => 'C/ falsa 123',
-    'city' => 'Alicante',
-    'province' => 'Alicante',
-    'phone' => '633322112',
-    'email' => 'as@ej.com'
-];
-$orderItems = [
-    [
-        'line' => 1,
-        'code' => 'AAA00030',
-        'description' => 'Galletas Shin Chan Plátano',
-        'quantity' => 1,
-        'price' => 19.95,
-        'discount' => 0,
-        'subtotal' => 19.95
-    ]
-];
+
+$orderItems = obtenerArticulosPedido($idPedido, $dniCliente);
 ?>
 
 <!DOCTYPE html>
@@ -40,14 +44,14 @@ $orderItems = [
     <link rel="stylesheet" href="stylesheetcart.css">
 </head>
 <body class="d-flex flex-column min-vh-100">    
-    <?php require('components/navbar.php'); ?>
+    <?php require('navbar.php'); ?>
     <main class="flex-grow-1 py-5">
         <div class="container">
             <div class="card">
                 <div class="card-body">
-                    <h2 class="card-title text-center mb-4">Detalles del Pedido</h2>
+                    <h2 class="card-title text-center mb-4">Resumen del Pedido</h2>
                     
-                    <h5 class="mb-3">Resumen del Pedido</h5>
+                    <!-- <h5 class="mb-3">Resumen del Pedido</h5> -->
                     <table class="table table-bordered mb-4">
                         <thead>
                             <tr>
@@ -59,10 +63,10 @@ $orderItems = [
                         </thead>
                         <tbody>
                             <tr>
-                                <td><?php echo $order['id']; ?></td>
-                                <td><?php echo $order['date']; ?></td>
-                                <td><?php echo number_format($order['total'], 2); ?>€</td>
-                                <td><?php echo $order['status']; ?></td>
+                                <td><?= $order['numero_pedido'] ?></td>
+                                <td><?= $order['fecha'] ?></td>
+                                <td><?= number_format($order['total'], 2); ?>€</td>
+                                <td><?= $order['estado'] ?></td>
                             </tr>
                         </tbody>
                     </table>
@@ -71,37 +75,38 @@ $orderItems = [
                     <table class="table table-bordered mb-4">
                         <tr>
                             <th>D.N.I.</th>
-                            <td><?php echo $customer['dni']; ?></td>
+                            <td><?= htmlspecialchars($dniCliente); ?></td>
                             <th>Nombre</th>
-                            <td><?php echo $customer['name']; ?></td>
+                            <td><?= htmlspecialchars($customer['nombre']); ?></td>
                         </tr>
                         <tr>
                             <th>Dirección</th>
-                            <td><?php echo $customer['address']; ?></td>
+                            <td><?= htmlspecialchars($customer['direccion']); ?></td>
                             <th>Localidad</th>
-                            <td><?php echo $customer['city']; ?></td>
+                            <td><?= htmlspecialchars($customer['localidad']); ?></td>
                         </tr>
                         <tr>
                             <th>Provincia</th>
-                            <td><?php echo $customer['province']; ?></td>
+                            <td><?= htmlspecialchars($customer['provincia']); ?></td>
                             <th>Teléfono</th>
-                            <td><?php echo $customer['phone']; ?></td>
+                            <td><?= htmlspecialchars($customer['telefono']); ?></td>
                         </tr>
                         <tr>
                             <th>E-mail</th>
-                            <td colspan="3"><?php echo $customer['email']; ?></td>
+                            <td colspan="3"><?= htmlspecialchars($customer['email']); ?></td>
                         </tr>
                     </table>
 
-                    <h5 class="mb-3">Detalle del Pedido</h5>
+                    <h5 class="mb-3">Detalles del Pedido</h5>
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Nº línea</th>
+                                <!-- <th>Nº línea</th> -->
                                 <th>Artículo</th>
                                 <th>Descripción</th>
                                 <th>Cantidad</th>
-                                <th>Precio</th>
+                                <th>Precio Actual</th>
+                                <th>Precio Pagado</th>
                                 <th>Descuento</th>
                                 <th>Subtotal</th>
                             </tr>
@@ -109,28 +114,29 @@ $orderItems = [
                         <tbody>
                             <?php foreach ($orderItems as $item): ?>
                             <tr>
-                                <td><?php echo $item['line']; ?></td>
-                                <td><?php echo $item['code']; ?></td>
-                                <td><?php echo $item['description']; ?></td>
-                                <td><?php echo $item['quantity']; ?></td>
-                                <td><?php echo number_format($item['price'], 2); ?>€</td>
-                                <td><?php echo $item['discount']; ?>%</td>
-                                <td><?php echo number_format($item['subtotal'], 2); ?>€</td>
+                                <!-- <td><?= $item['line'] ?></td> -->
+                                <td><?= $item['code'] ?></td>
+                                <td><?= $item['descripcion'] ?></td>
+                                <td><?= $item['cantidad'] ?></td>
+                                <td><?= number_format($item['precio_articulo'], 2) ?>€</td>
+                                <td><?= number_format($item['precio_pagado'], 2); ?>€</td>
+                                <td style="<?= number_format($item['discount'], 2) > 0 ? 'background-color: #5ffa88' : '' ?>"><?= number_format($item['discount'], 2) ?>%</td>
+                                <td><?= number_format($item['subtotal'], 2) ?>€</td>
                             </tr>
                             <?php endforeach; ?>
                         </tbody>
                     </table>
 
                     <div class="text-center mt-4">
-                        <a href="order_cancel.php?id=<?php echo $order['id']; ?>&zona=1" class="btn btn-custom me-2">Cancelar Pedido</a>
-                        <a href="order_history.php?zona=1" class="btn btn-custom">Volver a Pedidos</a>
+                    <a href="order_cancel.php?id=<?= $order['numero_pedido'] ?>&date=<?= $order['fecha'] ?>&zona=1" class="btn btn-custom me-2">Cancelar Pedido</a>
+                    <a href="order_history.php?zona=1" class="btn btn-custom">Volver a Pedidos</a>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <?php require('components/footer.php'); ?>
+    <?php require('footer.php'); ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

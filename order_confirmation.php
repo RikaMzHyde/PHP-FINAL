@@ -17,7 +17,7 @@ require("functions/security.php");
 <body class="d-flex flex-column min-vh-100">
     <script>
         const modifyQuantity = (name, price, action) => {
-            fetch('api/carritoApi.php', {
+            fetch('carritoApi.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -39,7 +39,7 @@ require("functions/security.php");
                 .catch(error => console.error('Error:', error));
         }
     </script>    
-    <?php require('components/navbar.php') ?>
+    <?php require('navbar.php') ?>
     <main class="py-5">
         <div class="container">
             <div class="card">
@@ -77,12 +77,12 @@ require("functions/security.php");
         </div>
     </main>
 
-    <?php require('components/footer.php'); ?>
+    <?php require('footer.php'); ?>
 
     <script>
         async function loadCart() {
             try {
-                const response = await fetch('api/carritoApi.php', { method: 'GET' });
+                const response = await fetch('carritoApi.php', { method: 'GET' });
                 if (!response.ok) throw new Error('Error al cargar el carrito');
 
                 const cartData = await response.json();

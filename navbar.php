@@ -1,6 +1,8 @@
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand fs-2" href="#">Amato</a>
+        <!-- <a class="navbar-brand fs-2" href="#">Amato</a> -->
+        <img src="imgs\Amato.png" alt="Amato" style="height: 90px; width: 220px">
+
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -11,7 +13,15 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Contacto</a>
-                </li>
+                </li>                
+                <?php
+                if(isset($_SESSION["dni"]) && !empty($_SESSION["dni"]) ){                    
+                echo '
+                <li class="nav-item">
+                    <a class="nav-link" href="order_history.php">Mis pedidos</a>
+                </li>';
+                }
+                ?>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= isset($_SESSION["dni"]) && !empty($_SESSION["dni"]) ? 'user_session.php' : 'login.php' ?>">
                         <i class="bi bi-person"></i> 
@@ -46,7 +56,7 @@
             let totalPrice = 0;
             let totalItems = 0;
             try {
-                const response = await fetch('api/carritoApi.php', {
+                const response = await fetch('carritoApi.php', {
                     method: 'GET'
                 });
                 if (!response.ok) throw new Error('Error al cargar el carrito');

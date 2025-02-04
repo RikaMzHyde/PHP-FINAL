@@ -1,5 +1,5 @@
 <?php
-include("connect.php");
+require_once("connect.php");
 session_start();
 
 ?>
@@ -17,7 +17,7 @@ session_start();
 </head>
 
 <body class="d-flex flex-column min-vh-100">
-    <?php require('components/navbar.php'); ?>
+    <?php require('navbar.php'); ?>
 
     <main class="flex-grow-1">
         <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel">
@@ -206,89 +206,35 @@ session_start();
                     // Obtener el término de búsqueda desde el parámetro GET (si está presente)
                     $buscar = isset($_GET['buscar']) ? $_GET['buscar'] : '';
 
-                    // Conexión a la base de datos
-                    $conn = conectar_db();
-                    if (!$conn) {
-                        die("Error al conectar a la base de datos");
-                    }
-
                     // Configuración para paginación
                     $productos_por_pagina = 11;
                     $pagina_actual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
                     $offset = ($pagina_actual - 1) * $productos_por_pagina;
-
-                    // Consulta base
-                    $sql = "SELECT * FROM articulos WHERE 1";
-
-                    // Filtrar por categoría, si se seleccionó una
-                    if ($categoria) {
-                        $sql .= " AND categoria = :categoria";
-                    }
-
-                    // Filtrar por nombre de producto, si hay un término de búsqueda
-                    if ($buscar) {
-                        $sql .= " AND nombre LIKE :buscar";
-                    }
-
-                    // Agregar límite y offset para la paginación
-                    $sql .= " LIMIT :offset, :limite";
-
-                    // Preparar la consulta
-                    $stmt = $conn->prepare($sql);
-
-                    // Vincular los parámetros de la consulta
-                    if ($categoria) {
-                        $stmt->bindParam(':categoria', $categoria, PDO::PARAM_STR);
-                    }
-                    if ($buscar) {
-                        $buscar = "%" . $buscar . "%"; // Utilizamos % para hacer la búsqueda parcial
-                        $stmt->bindParam(':buscar', $buscar, PDO::PARAM_STR);
-                    }
-                    $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-                    $stmt->bindParam(':limite', $productos_por_pagina, PDO::PARAM_INT);
-
-                    // Ejecutar la consulta
-                    $stmt->execute();
-
+                    require_once('apiBD.php');
+                    $articulos = getArticulos($categoria, $buscar, $productos_por_pagina, $pagina_actual, $offset);
+                    
                     // Mostrar los productos
-                    while ($datos = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    foreach ($articulos as $articulo){
                         echo "<div class='col-md-2 mb-4'>
                                 <div class='card'>
-                                    <img src='" . $datos['imagen'] . "' class='card-img-top' alt='Imagen del producto'>
+                                    <img src='" . $articulo['imagen'] . "' class='card-img-top' alt='Imagen del producto'>
                                     <div class='card-body'>
-                                        <h5 class='card-title fw-bold'>" . $datos['nombre'] . "</h5>
-                                        <p class='card-text product-description'>" . $datos['descripcion'] . "</p>
+                                        <h5 class='card-title fw-bold'>" . $articulo['nombre'] . "</h5>
+                                        <p class='card-text product-description'>" . $articulo['descripcion'] . "</p>
                                         <div class='d-inline-flex'>
-                                            <button onclick=\"addToCart(".$datos['precio'].", '".$datos['nombre']. "', '".$datos['codigo']."')\" class='btn btn-custom' data-price='" . $datos['precio'] . "'>
+                                            <button onclick=\"addToCart(".$articulo['precio'].", '".$articulo['nombre']. "', '".$articulo['codigo']."')\" class='btn btn-custom' data-price='" . $articulo['precio'] . "'>
                                                 <i class='bi bi-cart-plus me-2' style='font-size: 1.3em;'></i> Añadir al carrito
                                             </button>
-                                            <div class='card-price fw-bold ms-3'>" . $datos['precio'] . "€</div>
+                                            <div class='card-price fw-bold ms-3'>" . $articulo['precio'] . "€</div>
                                         </div>
                                         
                                     </div>
                                 </div>
                             </div>";
                     }
-
+ 
                     // Obtener el número total de productos para la paginación
-                    $sql_total = "SELECT COUNT(*) FROM articulos WHERE 1";
-                    if ($categoria) {
-                        $sql_total .= " AND categoria = :categoria";
-                    }
-                    if ($buscar) {
-                        $sql_total .= " AND nombre LIKE :buscar";
-                    }
-
-                    $stmt_total = $conn->prepare($sql_total);
-                    if ($categoria) {
-                        $stmt_total->bindParam(':categoria', $categoria, PDO::PARAM_STR);
-                    }
-                    if ($buscar) {
-                        $buscar = "%" . $buscar . "%"; // Utilizamos % para hacer la búsqueda parcial
-                        $stmt_total->bindParam(':buscar', $buscar, PDO::PARAM_STR);
-                    }
-                    $stmt_total->execute();
-                    $total_productos = $stmt_total->fetchColumn();
+                    $total_productos = getTotalProductos($categoria, $buscar);
                     $total_paginas = ceil($total_productos / $productos_por_pagina);
 
                     // Mostrar la paginación
@@ -305,49 +251,14 @@ session_start();
                     echo '</div>';
                     ?>
             </section>
-            <!-- Sección separadora -->
-            <!-- <section class="py-5" style="background-color: #9f8bc0;">
-                <div class="container">
-                    <h2 class="text-center mb-4 txt-custom">¿Por qué elegir Amato?</h2>
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <div class="card h-100">
-                                <div class="card-body">
-                                    <h5 class="card-title">Calidad Garantizada</h5>
-                                    <p class="card-text">Todos nuestros productos son importados directamente de Japón,
-                                        asegurando la más alta calidad.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="card h-100">
-                                <div class="card-body">
-                                    <h5 class="card-title">Envío Rápido</h5>
-                                    <p class="card-text">Entregamos tus productos en tiempo récord para que puedas
-                                        disfrutarlos lo antes posible.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="card h-100">
-                                <div class="card-body">
-                                    <h5 class="card-title">Atención al Cliente</h5>
-                                    <p class="card-text">Nuestro equipo está siempre disponible para ayudarte con
-                                        cualquier duda o consulta.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section> -->
     </main>
-    <?php require('components/footer.php'); ?>
+    <?php require('footer.php'); ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
 
         // Función para añadir un producto al carrito
         function addToCart(price, name, code) {
-            fetch('api/carritoApi.php', {
+            fetch('carritoApi.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

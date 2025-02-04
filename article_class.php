@@ -91,7 +91,7 @@ class Articulo
     //Function para obtener el codigo del artículo
     public static function obtenerCodigoArticulo($codigo)
     {
-        include("connect.php");
+        require_once("connect.php");
         $conn = conectar_db();
 
         if ($conn) {
@@ -157,7 +157,7 @@ class Articulo
     //Function para eliminar el articulo
     public static function eliminarArticulo($codigo)
     {
-        include("connect.php");
+        require_once("connect.php");
         $conn = conectar_db();
 
         if ($conn) {

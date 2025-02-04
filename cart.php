@@ -1,5 +1,6 @@
 <?php
 session_start();
+print_r($_SESSION['cart']);
 ?>
 
 <!DOCTYPE html>
@@ -16,16 +17,15 @@ session_start();
 
 <body class="d-flex flex-column min-vh-100">
     <script>
-        const modifyQuantity = (name, price, action) => {
-            fetch('api/carritoApi.php', {
+        const modifyQuantity = (code, action) => {
+            fetch('carritoApi.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
                         action: action,
-                        price: price,
-                        name: name
+                        code: code
                     })
                 })
                 .then(response => response.json())
@@ -39,7 +39,7 @@ session_start();
                 .catch(error => console.error('Error:', error));
         }
     </script>
-    <?php require('components/navbar.php') ?>
+    <?php require('navbar.php') ?>
     <main class="py-5">
         <div class="container">
             <div class="card">
@@ -76,11 +76,11 @@ session_start();
             </div>
         </div>
     </main>
-    <?php require('components/footer.php'); ?>
+    <?php require('footer.php'); ?>
     <script>
         async function loadCart() {
             try {
-                const response = await fetch('api/carritoApi.php', { method: 'GET' });
+                const response = await fetch('carritoApi.php', { method: 'GET' });
                 if (!response.ok) throw new Error('Error al cargar el carrito');
 
                 const cartData = await response.json();
@@ -97,7 +97,6 @@ session_start();
             const cartTotalPrice = document.querySelector('#cart-total-price');
             let totalPrice = 0;
             let totalItems = 0;
-
             cartTableBody.innerHTML = '';
 
             if (cart.length === 0) {
@@ -118,12 +117,12 @@ session_start();
                         <td>${item.name}</td>
                         <td>${item.price}€</td>
                         <td>
-                            <button class="btn btn-sm btn-outline-secondary decrease-quantity" onclick="modifyQuantity('${item.name}', ${item.price}, 'remove')">-</button>
+                            <button class="btn btn-sm btn-outline-secondary decrease-quantity" onclick="modifyQuantity('${item.code}', 'remove')">-</button>
                             <span class="mx-2">${item.quantity}</span>
-                            <button class="btn btn-sm btn-outline-secondary increase-quantity" onclick="modifyQuantity('${item.name}', ${item.price}, 'add')">+</button>
+                            <button class="btn btn-sm btn-outline-secondary increase-quantity" onclick="modifyQuantity('${item.code}', 'add')">+</button>
                         </td>
                         <td>${subtotal.toFixed(2)} €</td>
-                        <td><button class="btn btn-sm btn-outline-danger remove-item" onclick="modifyQuantity('${item.name}', ${item.price}, 'clear')" data-id="${item.id}"><i class="bi bi-trash"></i></button></td>
+                        <td><button class="btn btn-sm btn-outline-danger remove-item" onclick="modifyQuantity('${item.code}', 'clear')" data-id="${item.id}"><i class="bi bi-trash"></i></button></td>
                     </tr>`;
             });
 

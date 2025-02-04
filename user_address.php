@@ -40,7 +40,7 @@ function getAddressValue($fname){
 </head>
 
 <body class="d-flex flex-column min-vh-100">    
-    <?php require('components/navbar.php') ?>
+    <?php require('navbar.php') ?>
     <main class="py-5">
         <div class="container">
             <div class="card">
@@ -49,18 +49,18 @@ function getAddressValue($fname){
                     <form action="user_address.php" method="post">
                         <div class="mb-3">
                             <label for="nombre" class="form-label">Nombre</label>
-                            <input type="text" class="form-control" id="nombre" name="nombre" value="<?= getAddressValue('nombre') ?>" required>
+                            <input type="text" class="form-control" id="nombre" name="nombre" value="<?= getAddressValue('nombre') ?>" disabled>
                         </div>
-                        <div class="mb-3">
+                        <!-- <div class="mb-3">
                             <label for="apellidos" class="form-label">Apellidos</label>
                             <input type="text" class="form-control" id="apellidos" name="apellidos" required>
-                        </div>
+                        </div> -->
                         <div class="mb-3">
                             <label for="email" class="form-label">Correo Electrónico</label>
                             <input type="email" class="form-control" id="email" name="email"
                                 required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                                  value="<?= getAddressValue('email') ?>"
-                                title="El correo debe tener un formato válido, como usuario@dominio.com">
+                                title="El correo debe tener un formato válido, como usuario@dominio.com" disabled>
                         </div>
                         <div class="mb-3">
                             <label for="direccion" class="form-label">Dirección</label>
@@ -87,7 +87,7 @@ function getAddressValue($fname){
             </div>
         </div>
     </main>
-    <?php require('components/footer.php'); ?>
+    <?php require('footer.php'); ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>

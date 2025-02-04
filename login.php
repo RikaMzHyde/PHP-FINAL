@@ -76,7 +76,7 @@ if (isset($_SESSION["mensajeEliminado"])) {
 
 <body class="d-flex flex-column min-vh-100">
 
-    <?php require('components/navbar.php') ?>
+    <?php require('navbar.php') ?>
     <main class="flex-grow-1">
     <div class="vh-center">
         <div id="contenedor">
@@ -119,7 +119,7 @@ if (isset($_SESSION["mensajeEliminado"])) {
     </div>
     </main>
     
-    <?php require('components/footer.php'); ?>
+    <?php require('footer.php'); ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 

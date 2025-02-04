@@ -2,16 +2,15 @@
 session_start();
 require("functions/security.php");
 
-require_once 'api/apiBD.php'; // Incluir el archivo de la base de datos
-
+require_once 'apiBD.php'; // Incluir el archivo de la base de datos
 // echo '<pre>';
 // echo 'Debug variables';
 // var_dump($_SESSION);
 // var_dump($_POST);
 // echo '</pre>';
 // Verificar si se ha iniciado un pago
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
-    $dni = '29057413H';//$_SESSION['usuario_dni']; // DNI del usuario desde la sesión
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['cart']) && !empty($_SESSION['cart']) && isset($_SESSION['dni']) && !empty($_SESSION['dni'])) {
+    $dni = $_SESSION['dni']; // DNI del usuario desde la sesión
     $fecha = date('Y-m-d H:i:s'); // Fecha actual
     $total = 0;
     $orderDetails = $_SESSION['cart']; // Ejemplo: ['products' => 2, 'total' => 51.87, 'order_number' => 12345]
@@ -53,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['cart']) && !empty(
 </head>
 
 <body class="d-flex flex-column min-vh-100">
-    <?php require('components/navbar.php') ?>
+    <?php require('navbar.php') ?>
     <main class="py-5">
         <div class="container">
             <div class="row">
@@ -107,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['cart']) && !empty(
         </div>
     </main>
 
-    <?php require('components/footer.php'); ?>
+    <?php require('footer.php'); ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

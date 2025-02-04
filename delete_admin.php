@@ -1,5 +1,5 @@
 <?php
-include("connect.php");
+require_once("connect.php");
 include("functions/security.php");
 include("user_class.php");
 ?>
