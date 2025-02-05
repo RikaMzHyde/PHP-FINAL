@@ -1,7 +1,6 @@
 <?php
 session_start();
 require("functions/security.php");
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Guardar los datos del formulario en la sesión
     $_SESSION['user_address'] = [
@@ -10,7 +9,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'direccion' => $_POST['direccion'],
         'localidad' => $_POST['localidad'],
         'provincia' => $_POST['provincia'],
-        'telefono' => $_POST['telefono']
+        'telefono' => $_POST['telefono'],
+        'email' => $_POST['email']
     ];
 
     // Redirigir a la siguiente página
@@ -49,7 +49,7 @@ function getAddressValue($fname){
                     <form action="user_address.php" method="post">
                         <div class="mb-3">
                             <label for="nombre" class="form-label">Nombre</label>
-                            <input type="text" class="form-control" id="nombre" name="nombre" value="<?= getAddressValue('nombre') ?>" disabled>
+                            <input type="text" class="form-control" id="nombre" name="nombre" value="<?= getAddressValue('nombre') ?>" readonly>
                         </div>
                         <!-- <div class="mb-3">
                             <label for="apellidos" class="form-label">Apellidos</label>
@@ -60,7 +60,7 @@ function getAddressValue($fname){
                             <input type="email" class="form-control" id="email" name="email"
                                 required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                                  value="<?= getAddressValue('email') ?>"
-                                title="El correo debe tener un formato válido, como usuario@dominio.com" disabled>
+                                title="El correo debe tener un formato válido, como usuario@dominio.com" readonly>
                         </div>
                         <div class="mb-3">
                             <label for="direccion" class="form-label">Dirección</label>

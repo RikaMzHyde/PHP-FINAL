@@ -1,6 +1,7 @@
 <?php
 session_start();
 require("functions/security.php");
+require_once("apiBD.php");
 
 // Verifica si los datos necesarios existen en la sesión
 if (!isset($_SESSION['order_details'], $_SESSION['user_address'], $_SESSION['payment_info'], $_SESSION['nombre'])) {
@@ -13,12 +14,14 @@ if (!isset($_SESSION['order_details'], $_SESSION['user_address'], $_SESSION['pay
 //     /*header("Location: index.php");
 //     exit;*/
 }
+// Verificar si el pago fue exitoso y el ID del pedido está disponible
+$idPedido = $_SESSION['id_pedido'] ?? null;
 
+$_SESSION['pedido_completado'] = true;
 // Datos del pedido
-$orderDetails = $_SESSION['cart'];
+$orderDetails = obtenerArticulosPedido($idPedido, $_SESSION['dni']);
 // Dirección del usuario
 $userAddress = $_SESSION['user_address'];
-var_dump($userAddress);
 
 
 // Información del pago
@@ -47,16 +50,12 @@ $paymentInfo = $_SESSION['pago']
                 <div class="col-md-9">
                     <div class="card">
                         <div class="card-body">
+                            
                             <?php 
-                            
                                 // Verificar si el pago fue exitoso y el ID del pedido está disponible
-                                if (isset($_SESSION['id_pedido'])) {
-                                    $idPedido = $_SESSION['id_pedido'];
-                            
-                                 $_SESSION['pedido_completado'] = true;
-
+                                if (isset($idPedido)) {
                             ?>
-                    <h2 class="card-title text-center mb-4">¡Pedido Realizado con Éxito!</h2>
+                            <h2 class="card-title text-center mb-4">¡Pedido Realizado con Éxito!</h2>
                             <div class="alert alert-success" role="alert">
                                 <h4 class="alert-heading">¡Gracias por tu compra, <?php echo htmlspecialchars($userAddress['nombre']); ?>!</h4>
                                 <p>Tu pedido ha sido procesado correctamente. Hemos enviado un correo electrónico de confirmación a tu dirección registrada.</p>
@@ -83,7 +82,7 @@ $paymentInfo = $_SESSION['pago']
                             <div class="text-center mt-4">
                                 <a href="index.php" class="btn btn-custom me-2">Volver a la tienda</a>
                                 <a href="order_history.php" class="btn btn-custom">Ver mis pedidos</a>
-                            </div>
+                    </div>
                             <?php
                             } else {
                                 echo "<h1>Error</h1>";

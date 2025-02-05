@@ -14,7 +14,6 @@ $requestPayload = json_decode(file_get_contents('php://input'), true);
 // Rutas de la API
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $cartItems = [];
-    //echo json_encode($_SESSION['cart'] ?? ['items' => []]);
     $codes = array_column($_SESSION['cart'], 'code');
     $quantityMap = array_column($_SESSION['cart'], 'quantity', 'code');
     $placeholders = str_repeat('?,', count($codes) - 1) . '?';
