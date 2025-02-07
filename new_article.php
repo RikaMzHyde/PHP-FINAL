@@ -76,7 +76,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Datos del Nuevo Artículo</title>
-    <link rel="stylesheet" href="stylesheet.css">
+    <link rel="stylesheet" href="stylesheetcart.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <script>
         //Función para validar la imagen
         function validarArchivo(input) {
@@ -119,33 +121,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar'])) {
 </head>
 
 <body>
-    <div id="contenedor">
-        <h1 class="titulo">Datos del Nuevo Artículo</h1>
+    <?php require('navbar.php') ?>
+    <main class="py-5" style="display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; flex-direction: column;">
+        <div id="contenedor">
+            <h1 class="titulo">Datos del Nuevo Artículo</h1>
 
-        <div id="mensaje" style="font-weight: bold; text-align: center; margin-bottom: 10px; color: 
+            <div id="mensaje" style="font-weight: bold; text-align: center; margin-bottom: 10px; color: 
             <?php echo empty($mensajeError) ? 'green' : 'red'; ?>;">
-            <?php echo !empty($mensajeError) ? $mensajeError : $mensajeExito; ?>
-        </div>
-
-        <form name="formarticulos" method="post" action="new_article.php" enctype="multipart/form-data">
-            <input name="nombre" type="text" id="tipo" maxlength="100" placeholder="Nombre" required>
-            <textarea name="descripcion" type="textarea" id="descripcion" maxlength="500" placeholder="Descripción" required rows="5" style="width: 100%; box-sizing: border-box; margin-bottom: 5px;"></textarea>
-            <input name="categoria" type="text" id="categoria" maxlength="40" placeholder="Categoría" required>
-            <input name="precio" type="number" id="precio" step="0.01" min="0" max="999999999999.99" placeholder="Precio €" required>
-            <input
-                name="imagen"
-                id="imagen"
-                type="file"
-                accept=".jpeg, .jpg, .png, .gif"
-                required
-                onchange="validarArchivo(this)">
-
-            <button type="submit" name="enviar">Añadir</button>
-            <div class="footer">
-                <button class="btn" onclick="window.location.href='editor_articles.php'">Volver a "Administración de Artículos"</button>
+                <?php echo !empty($mensajeError) ? $mensajeError : $mensajeExito; ?>
             </div>
-        </form>
-    </div>
+
+            <form name="formarticulos" method="post" action="new_article.php" enctype="multipart/form-data">
+                <input name="nombre" type="text" id="tipo" maxlength="100" placeholder="Nombre" required>
+                <textarea name="descripcion" type="textarea" id="descripcion" maxlength="500" placeholder="Descripción" required rows="5" style="width: 100%; box-sizing: border-box; margin-bottom: 5px;"></textarea>
+                <input name="categoria" type="text" id="categoria" maxlength="40" placeholder="Categoría" required>
+                <input name="precio" type="number" id="precio" step="0.01" min="0" max="999999999999.99" placeholder="Precio €" required>
+                <input
+                    name="imagen"
+                    id="imagen"
+                    type="file"
+                    accept=".jpeg, .jpg, .png, .gif"
+                    required
+                    onchange="validarArchivo(this)">
+
+                <button type="submit" name="enviar">Añadir</button>
+                <div class="footer">
+                    <button type="button" onclick="window.location.href='editor_articles.php'">Volver a "Administración de Artículos"</button>
+                </div>
+            </form>
+        </div>
+    </main>
+    <?php require('footer.php'); ?>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

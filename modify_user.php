@@ -63,11 +63,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["confirmar"])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="stylesheet.css">
+    <link rel="stylesheet" href="stylesheetcart.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <title>Modificar</title>
     <script>
         //Función para validar el formato de email en tiempo real
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             const emailInput = document.querySelector('input[name="email"]');
             const emailPattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
 
@@ -83,60 +85,69 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["confirmar"])) {
 </head>
 
 <body>
-
-    <div class="vh-center">
-        <div id="contenedor">
-            <div>
-                <div class="titulo">
-                    <h1>Estos son los datos que puedes modificar</h1>
+    <?php require('navbar.php') ?>
+    <main class="py-5">
+        <div class="vh-center">
+            <div id="contenedor">
+                <div>
+                    <div class="titulo">
+                        <h1>Datos que puedes modificar</h1>
+                    </div>
+                    <form method="POST" action="modify_user.php">
+                        <div class="dato">
+                            <label for="dni">DNI:</label>
+                            <input type="text" id="dni" name="dni" value="<?php echo $dni; ?>" disabled>
+                        </div>
+                        <div class="dato">
+                            <label for="nombre">Nombre:</label>
+                            <input type="text" id="nombre" name="nombre" value="<?php echo $nombre; ?>" required>
+                        </div>
+                        <div class="dato">
+                            <label for="direccion">Dirección:</label>
+                            <input type="text" id="direccion" name="direccion" value="<?php echo $direccion; ?>"
+                                required>
+                        </div>
+                        <div class="dato">
+                            <label for="localidad">Localidad:</label>
+                            <input type="text" id="localidad" name="localidad" value="<?php echo $localidad; ?>"
+                                required>
+                        </div>
+                        <div class="dato">
+                            <label for="provincia">Provincia:</label>
+                            <input type="text" id="provincia" name="provincia" value="<?php echo $provincia; ?>"
+                                required>
+                        </div>
+                        <div class="dato">
+                            <label for="telefono">Teléfono:</label>
+                            <input type="tel" id="telefono" name="telefono" value="<?php echo $telefono; ?>"
+                                pattern="\d{9}" title="El teléfono debe contener exactamente 9 dígitos" required>
+                        </div>
+                        <div class="dato">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" value="<?php echo $email; ?>" required
+                                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                                title="El correo debe tener un formato válido, como usuario@dominio.com">
+                        </div>
+                        <div class="dato">
+                            <label for="password">Password:</label>
+                            <input type="password" id="password" name="password" value="<?php echo $password; ?>"
+                                required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" name="confirmar" class="btn">
+                                Confirmar
+                            </button>
+                            <button type="button" onclick="history.back()" class="btn">
+                                Volver
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <form method="POST" action="modify_user.php">
-                    <div class="dato">
-                        <label for="dni">DNI:</label>
-                        <input type="text" id="dni" name="dni" value="<?php echo $dni; ?>" disabled>
-                    </div>
-                    <div class="dato">
-                        <label for="nombre">Nombre:</label>
-                        <input type="text" id="nombre" name="nombre" value="<?php echo $nombre; ?>" required>
-                    </div>
-                    <div class="dato">
-                        <label for="direccion">Dirección:</label>
-                        <input type="text" id="direccion" name="direccion" value="<?php echo $direccion; ?>" required>
-                    </div>
-                    <div class="dato">
-                        <label for="localidad">Localidad:</label>
-                        <input type="text" id="localidad" name="localidad" value="<?php echo $localidad; ?>" required>
-                    </div>
-                    <div class="dato">
-                        <label for="provincia">Provincia:</label>
-                        <input type="text" id="provincia" name="provincia" value="<?php echo $provincia; ?>" required>
-                    </div>
-                    <div class="dato">
-                        <label for="telefono">Teléfono:</label>
-                        <input type="tel" id="telefono" name="telefono" value="<?php echo $telefono; ?>" pattern="\d{9}" title="El teléfono debe contener exactamente 9 dígitos" required>
-                    </div>
-                    <div class="dato">
-                        <label for="email">Email:</label>
-                        <input type="email" id="email" name="email" value="<?php echo $email; ?>" required 
-                               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" 
-                               title="El correo debe tener un formato válido, como usuario@dominio.com">
-                    </div>
-                    <div class="dato">
-                        <label for="password">Password:</label>
-                        <input type="password" id="password" name="password" value="<?php echo $password; ?>" required>
-                    </div>
-                    <div class="form-actions">
-                        <button type="submit" name="confirmar" class="btn">
-                            Confirmar
-                        </button>
-                        <button type="button" onclick="history.back()" class="btn">
-                            Volver
-                        </button>
-                    </div>
-                </form>
             </div>
         </div>
-    </div>
+    </main>
+    <?php require('footer.php'); ?>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

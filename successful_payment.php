@@ -2,24 +2,19 @@
 session_start();
 require("functions/security.php");
 require_once("apiBD.php");
+include("user_class.php");
 
-// Verifica si los datos necesarios existen en la sesión
-if (!isset($_SESSION['order_details'], $_SESSION['user_address'], $_SESSION['payment_info'], $_SESSION['nombre'])) {
-    // Redirigir a una página de error o a la página de inicio si faltan datos
-//     echo '<pre>';
-//     echo 'Debug variables';
-//  var_dump($_SESSION);
-// // var_dump($_POST);
-// echo '</pre>';
-//     /*header("Location: index.php");
-//     exit;*/
+if(!isset($_SESSION['pago'])){
+    header("Location: cart.php?error=error");
+    exit();
 }
+$_SESSION['cart'] = [];
 // Verificar si el pago fue exitoso y el ID del pedido está disponible
 $idPedido = $_SESSION['id_pedido'] ?? null;
 
 $_SESSION['pedido_completado'] = true;
 // Datos del pedido
-$orderDetails = obtenerArticulosPedido($idPedido, $_SESSION['dni']);
+$orderItems = obtenerArticulosPedido($idPedido, $_SESSION['dni']);
 // Dirección del usuario
 $userAddress = $_SESSION['user_address'];
 
@@ -27,7 +22,21 @@ $userAddress = $_SESSION['user_address'];
 // Información del pago
 $paymentInfo = '';
 // Guardar el método de pago en la sesión si el formulario fue enviado
-$paymentInfo = $_SESSION['pago']
+$paymentInfo = $_SESSION['pago'];
+
+
+
+$dniCliente = $_SESSION['dni'] ?? null;
+$order = obtenerDetallesPedido($idPedido, $dniCliente);
+$usuarioSesion = Usuario::obtenerUsuarioDNI($dniCliente);$customer = [
+    'dni' => $_SESSION['dni'] ?? '',
+    'nombre' => $usuarioSesion->getNombre(),
+    'direccion' => $usuarioSesion->getDireccion(),
+    'localidad' => $usuarioSesion->getLocalidad(),
+    'provincia' => $usuarioSesion->getProvincia(),
+    'telefono' => $usuarioSesion->getTelefono(),
+    'email' => $usuarioSesion->getEmail(),
+];
 ?>
 
 <!DOCTYPE html>
@@ -63,22 +72,24 @@ $paymentInfo = $_SESSION['pago']
                                 <p class="mb-0">Número de pedido: <strong>#<?php echo htmlspecialchars($idPedido); ?></strong></p>
                             </div>
                             <p>Resumen de tu pedido:</p>
-                            <ul>
+                            <!--<ul>
                                 <li><strong>Productos:</strong>
                                 <?php 
                                 $total = 0;
                                 foreach ($orderDetails as $product) {
-                                    $productTotal = $product['price'] * $product['quantity'];
+                                    $productTotal = $product['precio_pagado'] * $product['cantidad'];
                                     $total += $productTotal;
                                     echo "<li>" . htmlspecialchars($product['name']) . 
-                                        " - Cantidad: " . htmlspecialchars($product['quantity']) . 
-                                        " - Precio Unitario: " . number_format($product['price'], 2) . "€";
+                                        " - Cantidad: " . htmlspecialchars($product['cantidad']) . 
+                                        " - Precio Unitario: " . number_format($product['precio_pagado'], 2) . "€";
                                 }
                                 ?>
                                 <li><strong>Total del pedido:</strong> <?php echo number_format($total, 2); ?>€
                                 <li><strong>Método de pago:</strong> <?php echo htmlspecialchars($paymentInfo); ?></li>
                                 <li><strong>Enviado a:</strong> <?php echo htmlspecialchars($userAddress['direccion'] . ", " . $userAddress['localidad'] . " " . $userAddress['provincia']); ?></li>
-                            </ul>
+                            </ul>-->
+                            
+                            <?php require('order_articles.php') ?>
                             <div class="text-center mt-4">
                                 <a href="index.php" class="btn btn-custom me-2">Volver a la tienda</a>
                                 <a href="order_history.php" class="btn btn-custom">Ver mis pedidos</a>

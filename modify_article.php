@@ -91,7 +91,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 //Function para generar un random string para asignar al nombre de la imagen
-function generateRandomString($length = 10) {
+function generateRandomString($length = 10)
+{
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $charactersLength = strlen($characters);
     $randomString = '';
@@ -111,7 +112,9 @@ function generateRandomString($length = 10) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Artículo</title>
-    <link rel="stylesheet" href="stylesheet.css">
+    <link rel="stylesheet" href="stylesheetcart.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <script>
         //Validamos la imagen antes de subirla
         function validarArchivo(input) {
@@ -154,50 +157,56 @@ function generateRandomString($length = 10) {
 </head>
 
 <body>
-    <div id="contenedor">
-        <h1 class="titulo">Editar Artículo</h1>
+    <?php require('navbar.php') ?>
+    <main class="py-5" style="display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; flex-direction: column;">
+        <div id="contenedor">
+            <h1 class="titulo">Editar Artículo</h1>
 
-        <div id="mensaje" style="font-weight: bold; text-align: center; margin-bottom: 10px; color: 
+            <div id="mensaje" style="font-weight: bold; text-align: center; margin-bottom: 10px; color: 
             <?php echo empty($mensajeError) ? 'green' : 'red'; ?>;">
-            <?php echo !empty($mensajeError) ? $mensajeError : $mensajeExito; ?>
-        </div>
-
-        <div class="formulario">
-            <form method="POST" action="modify_article.php?codigo=<?php echo $codigo; ?>" enctype="multipart/form-data">
-                <label for="codigo">Código:</label>
-                <input type="text" name="codigo" value="<?php echo $codigo; ?>" disabled>
-
-                <label for="nombre">Nombre:</label>
-                <input type="text" name="nombre" maxlength="40" value="<?php echo $nombre; ?>" required>
-
-                <label for="descripcion">Descripción:</label>
-                <textarea name="descripcion" maxlength="255" required rows="5" style="width: 100%; box-sizing: border-box; margin-bottom: 5px;"><?php echo $descripcion; ?></textarea>
-
-                <label for="categoria">Categoría:</label>
-                <input type="text" name="categoria" maxlength="40" value="<?php echo $categoria; ?>" required>
-
-                <label for="precio">Precio:</label>
-                <input type="number" name="precio" step="0.01" min="0" max="999999999999.99" value="<?php echo $precio; ?>" required>
-
-                <label for="imagen">Imagen Actual:</label>
-                <input type="text" name="imagen" value="<?php echo $imagenActual; ?>" readonly>
-
-                <label for="nuevaImagen">Nueva Imagen:</label>
-                <input type="file" name="nuevaImagen" accept="image/*" onchange="validarArchivo(this)">
-
-                <div class="vista-previa">
-                    <img src="<?php echo $imagenActual; ?>" alt="Vista previa de la imagen" style="width: 120px; height: 170px; object-fit: cover; display: block; margin: 0 auto;">
-                </div>
-
-                <button type="submit">Confirmar</button>
-            </form>
-
-            <div class="footer">
-                <button class="btn" onclick="window.location.href='editor_articles.php'">Volver a "Administración de Artículos"</button>
+                <?php echo !empty($mensajeError) ? $mensajeError : $mensajeExito; ?>
             </div>
 
+            <div class="formulario">
+                <form method="POST" action="modify_article.php?codigo=<?php echo $codigo; ?>" enctype="multipart/form-data">
+                    <label for="codigo">Código:</label>
+                    <input type="text" name="codigo" value="<?php echo $codigo; ?>" disabled>
+
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" name="nombre" maxlength="40" value="<?php echo $nombre; ?>" required>
+
+                    <label for="descripcion">Descripción:</label>
+                    <textarea name="descripcion" maxlength="255" required rows="5" style="width: 100%; box-sizing: border-box; margin-bottom: 5px;"><?php echo $descripcion; ?></textarea>
+
+                    <label for="categoria">Categoría:</label>
+                    <input type="text" name="categoria" maxlength="40" value="<?php echo $categoria; ?>" required>
+
+                    <label for="precio">Precio:</label>
+                    <input type="number" name="precio" step="0.01" min="0" max="999999999999.99" value="<?php echo $precio; ?>" required>
+
+                    <label for="imagen">Imagen Actual:</label>
+                    <input type="text" name="imagen" value="<?php echo $imagenActual; ?>" readonly>
+
+                    <label for="nuevaImagen">Nueva Imagen:</label>
+                    <input type="file" name="nuevaImagen" accept="image/*" onchange="validarArchivo(this)">
+
+                    <div class="vista-previa">
+                        <img src="<?php echo $imagenActual; ?>" alt="Vista previa de la imagen" style="width: 120px; height: 170px; object-fit: cover; display: block; margin: 0 auto;">
+                    </div>
+
+                    <button type="submit">Confirmar</button>
+                </form>
+
+                <div class="footer">
+                    <button type="button" onclick="window.location.href='editor_articles.php'">Volver a "Administración de Artículos"</button>
+                </div>
+
+            </div>
         </div>
-    </div>
+    </main>
+    <?php require('footer.php'); ?>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

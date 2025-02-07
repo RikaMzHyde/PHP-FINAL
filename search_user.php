@@ -34,12 +34,15 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="stylesheet.css">
+    <link rel="stylesheet" href="stylesheetcart.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <title>Buscar usuario</title>
 </head>
 
 <body>
-
+    <?php require('navbar.php') ?>
+    <main class="py-5"></main>
     <div class="vh-center">
         <div id="contenedor">
             <div>
@@ -66,12 +69,15 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                     <label for="dni" class="label" style="font-weight: bold; color: white">Introduce el DNI del usuario</label>
                     <input type="text" id="dni" name="dni" required class="input">
                     <button type="submit">Buscar</button>
-                    <button class="btn" onclick="window.history.back()">Volver</button>
-                    <button class="btn" onclick="window.location.href='admin_session.php'">Volver a "Mantenimiento de Clientes"</button>
+                    <button type="button" onclick="window.history.back()">Volver</button>
+                    <button type="button" onclick="window.location.href='admin_session.php'">Volver a "Mantenimiento de Clientes"</button>
                 </form>
             </div>
         </div>
     </div>
+    </main>
+    <?php require('footer.php'); ?>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

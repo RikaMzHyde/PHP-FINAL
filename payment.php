@@ -1,6 +1,9 @@
 <?php
 session_start();
-require("functions/security.php");
+require_once("functions/security.php");
+require_once('cart_functions.php');
+checkCartItems();
+
 require_once 'apiBD.php'; // Incluir el archivo de la base de datos
 // echo '<pre>';
 // echo 'Debug variables';
@@ -12,35 +15,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['cart']) && !empty(
     $dni = $_SESSION['dni']; // DNI del usuario desde la sesión
     $fecha = date('Y-m-d H:i:s'); // Fecha actual
     $total = 0;
-    //$orderDetails = $_SESSION['cart']; // Ejemplo: ['products' => 2, 'total' => 51.87, 'order_number' => 12345]
+
+    // Obtener los detalles del carrito
     $codes = array_column($_SESSION['cart'], 'code');
     $quantityMap = array_column($_SESSION['cart'], 'quantity', 'code');
     $placeholders = str_repeat('?,', count($codes) - 1) . '?';
     $orderDetails = getCartItems($codes, $quantityMap, $placeholders);
-    
+
+    // Calcular el total del pedido
     foreach ($orderDetails as $product) {
         $total += $product['price'] * $product['quantity'];
     }
-    // Insertar el pedido en la base de datos
-    $idPedido = insertarPedido($fecha, $total, 'Pendiente', $dni);
+    print_r($orderDetails);
 
-    foreach ($orderDetails as $product) {
-        insertarDetallePedido(
-            $idPedido,
-            $product['code'],
-            $product['price'],
-            $product['quantity']
-        );
+    // Iniciar una transacción
+    $conn = conectar_db();
+    $conn->beginTransaction();
+
+    try {
+        // Insertar el pedido en la base de datos
+        $idPedido = insertarPedido($conn, $fecha, $total, 'Pendiente', $dni);
+
+        // Insertar los detalles del pedido
+        foreach ($orderDetails as $product) {
+            $success = insertarDetallePedido($conn, $idPedido, $product['code'], $product['price'], $product['quantity']);
+            if (!$success) {
+                throw new Exception("Error al insertar el detalle del pedido.");
+            }
+        }
+
+        // Confirmar la transacción
+        $conn->commit();
+
+        // Guardar el ID del pedido en la sesión para usarlo en successful_payment
+        $_SESSION['id_pedido'] = $idPedido;
+        $_SESSION['pago'] = $_POST['pago'];
+
+        // Redirigir al archivo successful_payment
+        header('Location: successful_payment.php');
+        exit();
+    } catch (Exception $e) {
+        // Revertir la transacción en caso de error
+        $conn->rollBack();
+        echo "Error: " . $e->getMessage();
     }
-
-
-    // Guardar el ID del pedido en la sesión para usarlo en successful_payment
-    $_SESSION['id_pedido'] = $idPedido;
-    $_SESSION['pago'] = $_POST['pago'];
-
-    // Redirigir al archivo successful_payment
-    header('Location: successful_payment.php');
-    exit();
 }
 ?>
 

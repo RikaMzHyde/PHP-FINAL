@@ -159,16 +159,22 @@ html, body {
     text-align: center;
 }
 
+.titulo {
+    color: rgb(80, 255, 203);
+}
 #contenedor input[type="text"],
-#contenedor input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid rgb(80, 255, 203);
-    border-radius: 5px;
-    background-color: white;
-    color: #4e4363;
-    box-sizing: border-box;
+#contenedor input[type="email"],
+#contenedor input[type="password"],
+#contenedor input[type="tel"],
+#contenedor input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid rgb(80, 255, 203);
+  border-radius: 5px;
+  background-color: white;
+  color: #4e4363;
+  box-sizing: border-box;
 }
 
 #contenedor input::placeholder {
@@ -176,22 +182,33 @@ html, body {
     
 }
 
-#contenedor button[type="submit"] {
-    width: 100%;
-    padding: 10px;
-    background-color: #85b1c5;
-    color: #4e4363;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s;
+#contenedor input[type="text"]:disabled,
+#contenedor input[type="password"]:disabled,
+#contenedor input[type="email"]:disabled {
+  background-color: #bfc1c4;
+  color: #6c757d;
+  cursor: not-allowed;
 }
 
-#contenedor button[type="submit"]:hover {
-    background-color: rgb(80, 255, 203);
-    color: #4e4363;
+#contenedor button[type="submit"],
+#contenedor button[type="button"] {
+  width: 100%;
+  padding: 10px;
+  background-color: #85b1c5;
+  color: #4e4363;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 10px;
+}
+
+#contenedor button[type="submit"]:hover,
+#contenedor button[type="button"]:hover {
+  background-color: rgb(80, 255, 203);
+  color: #4e4363;
 }
 
 .footer a {
@@ -202,4 +219,20 @@ html, body {
 .footer a:hover {
     color: #85b1c5;
     text-decoration: underline;
+}
+
+
+.error{
+    color: #D8000C;
+    background-color: #FFBABA;
+    background-image: url('https://i.imgur.com/GnyDvKN.png');
+}
+
+
+.info, .success, .warning, .error, .validation {
+    border: 1px solid;
+    margin: 10px 0px;
+    padding: 15px 10px 15px 50px;
+    background-repeat: no-repeat;
+    background-position: 10px center;
 }

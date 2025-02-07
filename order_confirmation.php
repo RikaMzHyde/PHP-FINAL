@@ -1,5 +1,8 @@
 <?php
-require("functions/security.php");
+require_once("functions/security.php");
+require_once('cart_functions.php');
+checkCartItems();
+require_once("connect.php");
 ?>
 
 <!DOCTYPE html>

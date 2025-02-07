@@ -3,6 +3,7 @@ require_once("connect.php");
 include("functions/security.php");
 include("user_class.php");
 
+
 //Verificamos si hay un mensaje de éxito o eliminación con GET
 $mensajeExito = isset($_GET["mensaje"]) && $_GET["mensaje"] === "exito";
 $mensajeEliminado = isset($_GET["mensaje"]) && $_GET["mensaje"] === "eliminado";
@@ -11,6 +12,37 @@ $mensajeEliminado = isset($_GET["mensaje"]) && $_GET["mensaje"] === "eliminado";
 if (!isset($_SESSION["dni"]) || empty($_SESSION["dni"])) {
     echo "Error: No se encontró el DNI en la sesión.";
     exit();
+} else {
+    $dni = $_SESSION["dni"];
+
+    //Nos aseguramos de que $dni sea una cadena válida
+    if (is_string($dni) && $dni !== "") {
+        //Obtenemos el usuario asociado al DNI
+        $usuarioSesion = Usuario::obtenerUsuarioDNI($dni);
+
+        //Verificamos si el usuario se ha obtenido correctamente
+        if ($usuarioSesion) {
+            $nombre = $usuarioSesion->getNombre();
+            $direccion = $usuarioSesion->getDireccion();
+            $localidad = $usuarioSesion->getLocalidad();
+            $provincia = $usuarioSesion->getProvincia();
+            $telefono = $usuarioSesion->getTelefono();
+            $email = $usuarioSesion->getEmail();
+            $password = $usuarioSesion->getPassword();
+
+            $_SESSION['user_address'] = [
+                'nombre' => $nombre,
+                'direccion' => $direccion,
+                'localidad' => $localidad,
+                'provincia' => $provincia,
+                'telefono' => $telefono,
+                'email' => $email
+            ];
+        } else {
+            echo "Error: No se pudo obtener el usuario con el DNI proporcionado.";
+            exit();
+        }
+    }
 }
 
 //Solicitud para ordenar los resultados de la tabla
@@ -36,7 +68,9 @@ if (isset($_SESSION['ordenar']) && !empty($_SESSION['ordenar'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="stylesheet.css">
+    <link rel="stylesheet" href="stylesheetcart.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <title>Mantenimiento Clientes</title>
 
     <style>
@@ -87,6 +121,8 @@ if (isset($_SESSION['ordenar']) && !empty($_SESSION['ordenar'])) {
 </head>
 
 <body>
+<?php require('navbar.php') ?>
+<main class="py-5">
     <div id="contenedor" style="display: inline-block; width: auto; max-width: none;">
         <h1 class="titulo">Mantenimiento de Clientes</h1>
 
@@ -134,7 +170,7 @@ if (isset($_SESSION['ordenar']) && !empty($_SESSION['ordenar'])) {
                         echo "<td>" . $datos["provincia"] . "</td>";
                         echo "<td>" . $datos["telefono"] . "</td>";
                         echo "<td>" . $datos["email"] . "</td>";
-                        echo "<td>" . $datos["password"] . "</td>";
+                        echo "<td>•••••</td>";
                         echo "<td>" . ($datos["admin"] == 1 ? "Sí" : "No") . "</td>";
                         echo "<td>" . ($datos["editor"] == 1 ? "Sí" : "No") . "</td>";
                         echo "<td><a href='modify_admin.php?dni=" . $datos["dni"] . "'>✏️</a></td>";
@@ -180,6 +216,11 @@ if (isset($_SESSION['ordenar']) && !empty($_SESSION['ordenar'])) {
             </form>
         </div>
     </div>
+    </main>
 </body>
+<div style="text-align:left">
+<?php require('footer.php'); ?>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</div>
 
 </html>

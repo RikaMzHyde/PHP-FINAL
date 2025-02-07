@@ -21,6 +21,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sort'])) {
 
 <head>
     <title>Administración de Artículos</title>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="stylesheetcart.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <style>
         body {
             font-family: Arial, Helvetica, sans-serif;
@@ -54,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sort'])) {
         /* Estilos generales */
         #formularioad {
             width: 90%;
-            margin: auto;
+            margin: 20px auto;
             padding: 20px 10px;
             display: flex;
             box-sizing: border-box;
@@ -76,13 +82,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sort'])) {
         .ordenacion_nombre button,
         .buscar button {
             border: none;
-            color: black;
             padding: 10px 20px;
             text-align: center;
             text-decoration: none;
             font-size: 16px;
             border-radius: 5px;
             background-color: #85b1c5;
+            color: #4e4363;
+            transition: background-color 0.3s;
         }
 
         #botonAtras a:hover,
@@ -108,11 +115,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sort'])) {
         .buscar button {
             width: 150px;
             background-color: #85b1c5;
-            color: black;
+            color: #4e4363;
+            transition: background-color 0.3s;
         }
 
         /* Tabla */
-        table {
+        /*table {
             width: 100%;
             height: 100%;
             border-radius: 5px;
@@ -130,7 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sort'])) {
 
         th {
             background-color: #b3a9c7;
-        }
+        }*/
 
         td img {
             width: 120px;
@@ -164,6 +172,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sort'])) {
 </head>
 
 <body>
+    
+    <?php require('navbar.php'); ?>
     <div id="formularioad">
         <h1 class="titulo">Administración de Artículos</h1>
 
@@ -223,82 +233,84 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sort'])) {
         </div>
         <br>
         <br>
-        <table>
-            <tr>
-                <th>Código</th>
-                <th>Nombre</th>
-                <th>Descripción</th>
-                <th>Categoría</th>
-                <th>Precio</th>
-                <th>Imagen</th>
-                <th class="editar">Modificar</th>
-                <th class="borrar">Borrar</th>
-            </tr>
-
-            <?php
-
+        <table class="table table-secondary  table-striped-columns">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Categoría</th>
+                    <th>Precio</th>
+                    <th>Imagen</th>
+                    <th class="editar">Modificar</th>
+                    <th class="borrar">Borrar</th>
+                </tr>
+            </thead>
+            <tbody class="align-middle">
+                <?php
             $conn = conectar_db();
 
-            if (!$conn) {
-                die("Error al conectar a la base de datos");
-            }
-            //Determina la página y el inicio para la paginación
-            if (isset($_GET["pagina"])) {
-                $pagina = $_GET["pagina"];
-                $inicio = ($pagina - 1) * $articulosPorPagina;
-            }
+if (!$conn) {
+    die("Error al conectar a la base de datos");
+}
+//Determina la página y el inicio para la paginación
+if (isset($_GET["pagina"])) {
+    $pagina = $_GET["pagina"];
+    $inicio = ($pagina - 1) * $articulosPorPagina;
+}
 
-            try {
-                //Consulta para obtener el total de artículos
-                $stmt = $conn->prepare("SELECT * FROM articulos");
-                $stmt->execute();
-                $totalArticulos = $stmt->rowCount();
-                $totalPaginas = ceil($totalArticulos / $articulosPorPagina);
-                //Consulta para obtener los artículos según la paginación
-                $stmt = $conn->prepare("SELECT * FROM articulos LIMIT :inicio, :articulosPorPagina");
-                //Determinar el orden actual
-                if (isset($_SESSION['sort']) && !empty($_SESSION['sort'])) {
-                    $sort = $_SESSION['sort'];
-                    unset($_SESSION['sort']);
-                }
+try {
+    //Consulta para obtener el total de artículos
+    $stmt = $conn->prepare("SELECT * FROM articulos");
+    $stmt->execute();
+    $totalArticulos = $stmt->rowCount();
+    $totalPaginas = ceil($totalArticulos / $articulosPorPagina);
+    //Consulta para obtener los artículos según la paginación
+    $stmt = $conn->prepare("SELECT * FROM articulos LIMIT :inicio, :articulosPorPagina");
+    //Determinar el orden actual
+    if (isset($_SESSION['sort']) && !empty($_SESSION['sort'])) {
+        $sort = $_SESSION['sort'];
+        unset($_SESSION['sort']);
+    }
 
-                //Realizar la búsqueda si se recibe un parámetro de búsqueda
-                $busqueda = isset($_GET['busqueda']) ? $_GET['busqueda'] : '';
-                
-                //Consulta con el orden y la busqueda según el criterio
-                switch ($sort) {
-                    case 'nombre_asc':
-                        $consulta = "SELECT * FROM articulos WHERE nombre LIKE :busqueda ORDER BY nombre ASC LIMIT :inicio, :articulosPorPagina";
-                        break;
-                    case 'nombre_desc':
-                        $consulta = "SELECT * FROM articulos WHERE nombre LIKE :busqueda ORDER BY nombre DESC LIMIT :inicio, :articulosPorPagina";
-                        break;
-                    default:
-                        $consulta = "SELECT * FROM articulos WHERE nombre LIKE :busqueda LIMIT :inicio, :articulosPorPagina";
-                }
+    //Realizar la búsqueda si se recibe un parámetro de búsqueda
+    $busqueda = isset($_GET['busqueda']) ? $_GET['busqueda'] : '';
+    
+    //Consulta con el orden y la busqueda según el criterio
+    switch ($sort) {
+        case 'nombre_asc':
+            $consulta = "SELECT * FROM articulos WHERE nombre LIKE :busqueda ORDER BY nombre ASC LIMIT :inicio, :articulosPorPagina";
+            break;
+        case 'nombre_desc':
+            $consulta = "SELECT * FROM articulos WHERE nombre LIKE :busqueda ORDER BY nombre DESC LIMIT :inicio, :articulosPorPagina";
+            break;
+        default:
+            $consulta = "SELECT * FROM articulos WHERE nombre LIKE :busqueda LIMIT :inicio, :articulosPorPagina";
+    }
 
-                $stmt = $conn->prepare($consulta);
-                $stmt->bindValue(':busqueda', '%' . $busqueda . '%', PDO::PARAM_STR);
-                $stmt->bindParam(':inicio', $inicio, PDO::PARAM_INT);
-                $stmt->bindParam(':articulosPorPagina', $articulosPorPagina, PDO::PARAM_INT);
-                $stmt->execute();
+    $stmt = $conn->prepare($consulta);
+    $stmt->bindValue(':busqueda', '%' . $busqueda . '%', PDO::PARAM_STR);
+    $stmt->bindParam(':inicio', $inicio, PDO::PARAM_INT);
+    $stmt->bindParam(':articulosPorPagina', $articulosPorPagina, PDO::PARAM_INT);
+    $stmt->execute();
 
-                while ($datos = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    echo "<tr>
-                                <td>" . $datos["codigo"] . "</td>
-                                <td>" . $datos["nombre"] . "</td>
-                                <td>" . $datos["descripcion"] . "</td>
-                                <td>" . $datos["categoria"] . "</td>
-                                <td>" . $datos["precio"] . '€' . "</td>
-                                <td><img src='" . $datos["imagen"] . "' alt='imagen'></td>
-                                <td><a href='modify_article.php?codigo=" . $datos["codigo"] . "'>✏️</a></td>
-                                <td><a href='delete_article.php?codigo=" . $datos["codigo"] . "'>✖️</a></td>
-                            </tr>";
-                }
-            } catch (PDOException $e) {
-                echo 'Error: ' . $e->getMessage();
-            }
-            ?>
+    while ($datos = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        echo "<tr>
+                    <td>" . $datos["codigo"] . "</td>
+                    <td>" . $datos["nombre"] . "</td>
+                    <td>" . $datos["descripcion"] . "</td>
+                    <td>" . $datos["categoria"] . "</td>
+                    <td>" . $datos["precio"] . '€' . "</td>
+                    <td><img src='" . $datos["imagen"] . "' alt='imagen'></td>
+                    <td><a href='modify_article.php?codigo=" . $datos["codigo"] . "'>✏️</a></td>
+                    <td><a href='delete_article.php?codigo=" . $datos["codigo"] . "'>✖️</a></td>
+                </tr>";
+    }
+} catch (PDOException $e) {
+    echo 'Error: ' . $e->getMessage();
+}
+?>
+            </tbody>
         </table>
 
         <div class="paginacion">
@@ -309,6 +321,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sort'])) {
             ?>
         </div>
     </div>
+    <?php require('footer.php'); ?>
 </body>
 
 </html>

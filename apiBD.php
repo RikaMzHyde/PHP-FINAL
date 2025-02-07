@@ -1,6 +1,6 @@
 <?php
-// Archivo: apiBD.php
 require_once("connect.php");
+require_once("log.php");
 
 function getArticulos($categoria, $buscar, $productos_por_pagina, $pagina_actual, $offset): array{
     try{
@@ -75,9 +75,7 @@ function getTotalProductos($categoria, $buscar){
 
 
 // Insertar un nuevo pedido en la tabla "pedidos"
-function insertarPedido($fecha, $total, $estado, $dni) {
-    $conn = conectar_db();
-
+function insertarPedido($conn, $fecha, $total, $estado, $dni) {
     $sql = "INSERT INTO pedidos (fecha, total, estado, dni) VALUES (:fecha, :total, :estado, :dni)";
     $stmt = $conn->prepare($sql);
 
@@ -93,10 +91,9 @@ function insertarPedido($fecha, $total, $estado, $dni) {
 }
 
 // Insertar un nuevo detalle del pedido en la tabla "detalles_pedido"
-function insertarDetallePedido($idPedido, $codigoArticulo, $precio, $cantidad) {
+function insertarDetallePedido($conn, $idPedido, $codigoArticulo, $precio, $cantidad) {
     try {
-        $conn = conectar_db();
-
+        
         $sql = "INSERT INTO detalles_pedido (id_pedido, codigo_articulo, precio, cantidad) VALUES (:id_pedido, :codigo_articulo, :precio, :cantidad)";
         $stmt = $conn->prepare($sql);
 
@@ -104,18 +101,13 @@ function insertarDetallePedido($idPedido, $codigoArticulo, $precio, $cantidad) {
         $stmt->bindParam(':codigo_articulo', $codigoArticulo);
         $stmt->bindParam(':precio', $precio);
         $stmt->bindParam(':cantidad', $cantidad);
-
         $stmt->execute();
 
         // Verificar si la inserción fue exitosa
-        if ($stmt->rowCount() > 0) {
-            return "Detalle de pedido insertado correctamente.";
-        } else {
-            echo "";
-        }
+        return $stmt->rowCount() > 0;
     } catch (PDOException $e) {
-        // Captura cualquier error y muestra el mensaje
-        echo "Error: " . $e->getMessage();
+        // Captura cualquier error y lanza una excepción
+        throw new Exception("Error al insertar detalle del pedido: " . $e->getMessage());
     }
 }
 
@@ -136,6 +128,24 @@ function obtenerPedidos($dniCliente) {
     }
 }
 
+
+function obtenerDetallesPedido($idPedido, $dniCliente) {
+    try {
+        $conn = conectar_db();
+
+        $sql = "SELECT numero_pedido, fecha, total, estado, dni FROM pedidos WHERE numero_pedido = :idPedido AND dni = :dni ORDER BY fecha DESC";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':idPedido', $idPedido, PDO::PARAM_INT);
+        $stmt->bindParam(':dni', $dniCliente, PDO::PARAM_STR);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
+        return null;
+    }
+}
+
 function obtenerArticulosPedido($idPedido, $dni) {
     try {
         $conn = conectar_db();
@@ -143,6 +153,7 @@ function obtenerArticulosPedido($idPedido, $dni) {
         $sql = "SELECT 
                     dp.id_detalle AS line, 
                     a.codigo AS code, 
+                    a.nombre as name,
                     a.descripcion, 
                     dp.cantidad, 
                     dp.precio AS precio_pagado, 

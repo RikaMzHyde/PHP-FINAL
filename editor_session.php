@@ -22,6 +22,15 @@ if (isset($_SESSION["dni"]) && !empty($_SESSION["dni"])) {
             $telefono = $usuarioSesion->getTelefono();
             $email = $usuarioSesion->getEmail();
             $password = $usuarioSesion->getPassword();
+            
+            $_SESSION['user_address'] = [
+                'nombre' => $nombre,
+                'direccion' => $direccion,
+                'localidad' => $localidad,
+                'provincia' => $provincia,
+                'telefono' => $telefono,
+                'email' => $email
+            ];
         } else {
             echo "Error: No se pudo obtener el usuario con el DNI proporcionado.";
             exit();
@@ -45,11 +54,15 @@ $mensajeError = isset($_GET["mensaje"]) && $_GET["mensaje"] === "error";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="stylesheet.css">
+    <link rel="stylesheet" href="stylesheetcart.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <title>Sesión de Editor</title>
 </head>
 
 <body>
+<?php require('navbar.php') ?>
+<main class="py-5">
 
     <div class="vh-center">
         <div id="contenedor">
@@ -101,6 +114,9 @@ $mensajeError = isset($_GET["mensaje"]) && $_GET["mensaje"] === "error";
             </div>
         </div>
     </div>
+</main>
+<?php require('footer.php'); ?>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

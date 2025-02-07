@@ -1,24 +1,25 @@
 <?php
 header('Content-Type: application/json'); // Respuesta en JSON
-session_start(); // Inicia la sesión
-require_once('apiBD.php');
 
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 // Inicializar el carrito si no existe
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = []; // Inicializa como un array vacío
 }
+require_once('cart_functions.php');
+
+require_once('apiBD.php');
+//require_once('log.php');
+
 
 // Obtener el cuerpo de la solicitud
 $requestPayload = json_decode(file_get_contents('php://input'), true);
 
 // Rutas de la API
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $cartItems = [];
-    $codes = array_column($_SESSION['cart'], 'code');
-    $quantityMap = array_column($_SESSION['cart'], 'quantity', 'code');
-    $placeholders = str_repeat('?,', count($codes) - 1) . '?';
-    $cartItems = getCartItems($codes, $quantityMap, $placeholders);
-    echo json_encode(value: $cartItems ?? ['items' => []]);
+    echo json_encode(loadCartItems());
     exit;
 }
 /*

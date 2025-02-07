@@ -1,5 +1,14 @@
 <?php
 session_start();
+$mensaje_error = '';
+if(isset($_GET['error'])){
+    $error = $_GET['error'];
+    if($error === 'carrito'){
+        $mensaje_error = 'El carrito está vacío por favor introduce artículos en él.';
+    } else {
+        $mensaje_error = 'La página a la que intentas acceder no se encuentra disponible.';
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -44,6 +53,7 @@ session_start();
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title text-center mb-4">Tu Cesta</h4>
+                    <?php if ($mensaje_error !== ''){ ?> <div class="error"><?= $mensaje_error ?></div> <?php } ?>
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
@@ -97,7 +107,6 @@ session_start();
             let totalPrice = 0;
             let totalItems = 0;
             cartTableBody.innerHTML = '';
-
             if (cart.length === 0) {
                 cartTableBody.innerHTML = '<tr><td colspan="5" class="text-center">No hay productos en el carrito</td></tr>';
                 cartTotal.textContent = '0.00';

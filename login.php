@@ -16,6 +16,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($usuarioObj) {
         //Almacena el DNI en la sesión (como cadena, no objeto)
         $_SESSION["dni"] = $dni;
+        $usuarioSesion = Usuario::obtenerUsuarioDNI($dni);
+
+        //Si se ha obtenido el usuario
+        if ($usuarioSesion) {
+            //Sacamos sus datos en variables para usarlas en la vista
+            $datosUsuario = [
+                'nombre' => $usuarioSesion->getNombre(),
+                'direccion' => $usuarioSesion->getDireccion(),
+                'localidad' => $usuarioSesion->getLocalidad(),
+                'provincia' => $usuarioSesion->getProvincia(),
+                'telefono' => $usuarioSesion->getTelefono(),
+                'email' => $usuarioSesion->getEmail()
+            ];
+            $_SESSION['usuario'] = $datosUsuario;
+            
+        }
         if ($usuarioObj->getAdmin() == 1) {
             //Si es admin, lo redirige a admin_session
             $_SESSION['rol'] = 'ADMIN';

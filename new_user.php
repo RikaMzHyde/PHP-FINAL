@@ -1,8 +1,11 @@
 <?php
 // include("functions/security.php");
+session_start();
 include("user_class.php");
 
-$mensajeError = "";
+// Recuperar los valores de la sesión si existen
+$form_data = $_SESSION["form_data"] ?? [];
+unset($_SESSION["form_data"]); // Borramos los valores para que no se queden después de un registro exitoso
 
 //Función para validar el DNI en PHP
 function esDniValido($dni)
@@ -29,6 +32,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST["password"];
     $admin = $_POST["admin"];
     $editor = $_POST["editor"];
+
+     // Guardamos los datos en la sesión para que persistan
+     $_SESSION["form_data"] = $_POST;
 
     //Validamos DNI en el servidor
     if (!esDniValido($dni)) {
@@ -67,7 +73,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nuevo Usuario</title>
-    <link rel="stylesheet" href="stylesheet.css">
+    <link rel="stylesheet" href="stylesheetcart.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <script>
         //Función para validar el DNI en el cliente
         function esDniValido(dni) {
@@ -111,6 +119,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <body>
+<?php require('navbar.php') ?>
+<main class="py-5">
     <div class="vh-center">
         <div id="contenedor">
             <div id="titulo">
@@ -120,21 +130,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div>
                 <?php
                 if (isset($_SESSION["mensajeError"])) {
-                    echo '<div style="color: red; font-weight: bold">' . $_SESSION["mensajeError"] . "</div>";
+                    echo '<div class="error">' . $_SESSION["mensajeError"] . "</div>";
                     //Para que no se muestre otra vez al actualizar la pagina
                     unset($_SESSION["mensajeError"]);
                 }
                 ?>
+
+                
+
+
                 <form method="POST" action="new_user.php">
                     <input type="text" name="dni" placeholder="DNI (Usuario)" required pattern="^\d{8}[A-Za-z]$"
-                        title="El DNI debe tener 8 números seguidos de una letra">
-                    <input type="text" name="nombre" placeholder="Nombre" required>
-                    <input type="text" name="direccion" placeholder="Dirección" required>
-                    <input type="text" name="localidad" placeholder="Localidad" required>
-                    <input type="text" name="provincia" placeholder="Provincia" required>
+                        title="El DNI debe tener 8 números seguidos de una letra" value="<?=  $form_data["dni"] ?? '' ?>" >
+                    <input type="text" name="nombre" placeholder="Nombre" value="<?=  $form_data["nombre"] ?? '' ?>" required>
+                    <input type="text" name="direccion" placeholder="Dirección" value="<?=  $form_data["direccion"] ?? '' ?>" required>
+                    <input type="text" name="localidad" placeholder="Localidad" value="<?=  $form_data["localidad"] ?? '' ?>" required>
+                    <input type="text" name="provincia" placeholder="Provincia" value="<?=  $form_data["provincia"] ?? '' ?>" required>
                     <input type="tel" name="telefono" placeholder="Teléfono" required pattern="\d{9}"
-                        title="El teléfono debe contener exactamente 9 dígitos">
-                    <input type="email" name="email" placeholder="Email" required 
+                        title="El teléfono debe contener exactamente 9 dígitos" value="<?=  $form_data["telefono"] ?? '' ?>">
+                    <input type="email" name="email" placeholder="Email" value="<?=  $form_data["email"] ?? '' ?>" required 
                         pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                         title="El correo debe tener un formato válido, como usuario@dominio.com">
                     <input type="password" name="password" placeholder="Contraseña" required>
@@ -148,6 +162,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </div>
+</main>
+<?php require('footer.php'); ?>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

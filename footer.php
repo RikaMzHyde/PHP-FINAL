@@ -1,11 +1,11 @@
 <footer class="footer py-4 mt-auto">
     <div class="container">
         <div class="row gy-4">
-            <div class="col-12 col-md-4">
+            <div class="col-md-5">
                 <h5 class="mb-3">Amato</h5>
                 <p class="small">Tu proveedor de productos de importación Japoneses de confianza 🌸</p>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col-md-4">
                 <h5 class="mb-3">Enlaces</h5>
                 <ul class="list-unstyled">
                     <li><a href="#" class="text-decoration-none txt-custom">Política de Privacidad</a></li>
@@ -13,7 +13,7 @@
                     <li><a href="#" class="text-decoration-none txt-custom">Contacto</a></li>
                 </ul>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col-md-3">
                 <h5 class="mb-3">Síguenos</h5>
                 <div class="d-flex gap-3">
                     <a href="#" class="txt-custom"><i class="bi bi-facebook"></i></a>

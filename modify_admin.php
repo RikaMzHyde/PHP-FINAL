@@ -42,8 +42,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["confirmar"])) {
     $telefono = $_POST["telefono"];
     $email = $_POST["email"];
     $password = $_POST["password"];
-    $admin = isset($_POST["admin"]) ? 1 : 0;
-    $editor = isset($_POST["editor"]) ? 1 : 0;
+    $admin = null;
+    $editor = null;
+    if($_SESSION['dni'] != $dni){
+        $admin = isset($_POST["admin"]) ? 1 : 0;
+        $editor = isset($_POST["editor"]) ? 1 : 0;
+    }
+    
 
     //Si el usuario es admin, también se marca como editor
     if ($admin == 1) {
@@ -91,15 +96,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["confirmar"])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="stylesheet.css">
-    <title>Modificar</title>
+    <link rel="stylesheet" href="stylesheetcart.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">    <title>Actualizar usuario</title>
     <script>
         //Validación del email en el cliente
         document.addEventListener("DOMContentLoaded", function() {
             const emailInput = document.querySelector('input[name="email"]');
             const emailPattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
 
-            emailInput.addEventListener("input", function () {
+            emailInput.addEventListener("input", function() {
                 if (emailInput.value === "" || emailPattern.test(emailInput.value)) {
                     emailInput.setCustomValidity("");
                 } else {
@@ -128,85 +134,91 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["confirmar"])) {
 </head>
 
 <body>
-    <div class="vh-center">
-        <div id="contenedor">
-            <div>
-                <h1 class="titulo">Actualizar Usuario</h1>
-            </div>
+    <?php require('navbar.php') ?>
+    <main class="py-5">
+        <div class="vh-center">
+            <div id="contenedor">
+                <div>
+                    <h1 class="titulo">Actualizar Usuario</h1>
+                </div>
 
-            <div>
-                <h2 class="titulo">Estos son los datos que puedes Modificar:</h2>
-            </div>
+                <div>
+                    <h2 class="titulo">Estos son los datos que puedes Modificar:</h2>
+                </div>
 
-            <div>
-                <?php
-                if (isset($_SESSION["mensajeError"])) {
-                    echo '<div style="color: red;">' . $_SESSION["mensajeError"] . "</div>";
-                    unset($_SESSION["mensajeError"]);
-                }
-                ?>
-                <form method="POST" action="modify_admin.php?dni=<?php echo $dni; ?>">
-                    <label for="dni">DNI:</label>
-                    <input type="text" name="dni" value="<?php echo $dni; ?>" disabled>
+                <div>
+                    <?php
+                    if (isset($_SESSION["mensajeError"])) {
+                        echo '<div style="color: red;">' . $_SESSION["mensajeError"] . "</div>";
+                        unset($_SESSION["mensajeError"]);
+                    }
+                    ?>
+                    <form method="POST" action="modify_admin.php?dni=<?= $dni; ?>">
+                        <label for="dni">DNI:</label>
+                        <input type="text" name="dni" value="<?= $dni; ?>" disabled>
 
-                    <label for="nombre">Nombre:</label>
-                    <input type="text" name="nombre" value="<?php echo $nombre; ?>" required>
+                        <label for="nombre">Nombre:</label>
+                        <input type="text" name="nombre" value="<?= $nombre; ?>" required>
 
-                    <label for="direccion">Dirección:</label>
-                    <input type="text" name="direccion" value="<?php echo $direccion; ?>" required>
+                        <label for="direccion">Dirección:</label>
+                        <input type="text" name="direccion" value="<?= $direccion; ?>" required>
 
-                    <label for="localidad">Localidad:</label>
-                    <input type="text" name="localidad" value="<?php echo $localidad; ?>" required>
+                        <label for="localidad">Localidad:</label>
+                        <input type="text" name="localidad" value="<?= $localidad; ?>" required>
 
-                    <label for="provincia">Provincia:</label>
-                    <input type="text" name="provincia" value="<?php echo $provincia; ?>" required>
+                        <label for="provincia">Provincia:</label>
+                        <input type="text" name="provincia" value="<?= $provincia; ?>" required>
 
-                    <label for="telefono">Teléfono:</label>
-                    <input type="text" name="telefono" value="<?php echo $telefono; ?>" pattern="\d{9}" title="El teléfono debe contener exactamente 9 dígitos" required>
+                        <label for="telefono">Teléfono:</label>
+                        <input type="text" name="telefono" value="<?= $telefono; ?>" pattern="\d{9}" title="El teléfono debe contener exactamente 9 dígitos" required>
 
-                    <label for="email">Email:</label>
-                    <input type="email" name="email" value="<?php echo $email; ?>" required>
+                        <label for="email">Email:</label>
+                        <input type="email" name="email" value="<?= $email; ?>" required>
 
-                    <label for="password">Password:</label>
-                    <input type="password" name="password" value="<?php echo $password; ?>" required>
+                        <label for="password">Password:</label>
+                        <input type="password" name="password" value="<?= $password; ?>" required>
 
-                    <div>
-                        <label for="admin" style="color: white;">Asignar Privilegios de Administrador</label>
-                        <!-- Con el session dni deshabilitamos los checkbox si se intenta editar sus propios permisos -->
-                        <input 
-                            type="checkbox"
-                            <?=
-                            $_SESSION['dni'] == $dni ? 'disabled' : ''
-                            ?>
-                            id="admin" 
-                            name="admin" 
-                            value="1" 
-                            style="transform: scale(0.8); margin-right: 5px;" 
-                            <?php echo $admin ? 'checked' : ''; ?>>
-                    </div>
-                    <div>
-                        <label for="editor" style="color: white;">Asignar Privilegios de Editor</label>
-                        <!-- Con el session dni deshabilitamos los checkbox si se intenta editar sus propios permisos -->
-                        <input 
-                            type="checkbox"
-                            <?=
-                            $_SESSION['dni'] == $dni ? 'disabled' : ''
-                            ?>
-                            id="editor" 
-                            name="editor" 
-                            value="1" 
-                            style="transform: scale(0.8); margin-right: 5px;" 
-                            <?php echo $editor ? 'checked' : ''; ?>>
-                    </div>
+                        <div>
+                            <label for="admin" style="color: white;">Asignar Privilegios de Administrador</label>
+                            <!-- Con el session dni deshabilitamos los checkbox si se intenta editar sus propios permisos -->
+                            <input
+                                type="checkbox"
+                                <?=
+                                $_SESSION['dni'] == $dni ? 'disabled' : ''
+                                ?>
+                                id="admin"
+                                name="admin"
+                                value="1"
+                                style="transform: scale(0.8); margin-right: 5px;"
+                                <?= $admin ? 'checked' : ''; ?>>
+                        </div>
+                        <div>
+                            <label for="editor" style="color: white;">Asignar Privilegios de Editor</label>
+                            <!-- Con el session dni deshabilitamos los checkbox si se intenta editar sus propios permisos -->
+                            <input
+                                type="checkbox"
+                                <?=
+                                $_SESSION['dni'] == $dni ? 'disabled' : ''
+                                ?>
+                                id="editor"
+                                name="editor"
+                                value="1"
+                                style="transform: scale(0.8); margin-right: 5px;"
+                                <?= $editor ? 'checked' : ''; ?>>
+                        </div>
 
-                    <div class="footer">
-                        <button type="submit" name="confirmar" class="btn">Confirmar</button>
-                        <button type="button" onclick="history.back()" class="btn">Volver</button>
-                    </div>
-                </form>
+                        <div class="footer">
+                            <button type="submit" name="confirmar" class="btn">Confirmar</button>
+                            <button type="button" onclick="history.back()" class="btn">Volver</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
+    </main>
+    <?php require('footer.php'); ?>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

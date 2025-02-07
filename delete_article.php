@@ -52,7 +52,9 @@ if (isset($_GET['codigo'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="stylesheet.css">
+    <link rel="stylesheet" href="stylesheetcart.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <title>Confirmar Eliminación de Artículo</title>
     <style>
     /* Estilo para los botones con diferencias específicas */
@@ -95,6 +97,8 @@ if (isset($_GET['codigo'])) {
 </head>
 
 <body>
+<?php require('navbar.php') ?>
+<main class="py-5">
     <div class="vh-center">
         <div id="contenedor" style="display: inline-block; width: auto; max-width: none;">
             <h2 class="titulo">Confirmar Eliminación de Artículo</h2>
@@ -140,6 +144,10 @@ if (isset($_GET['codigo'])) {
 
         </div>
     </div>
+</main>
+<?php require('footer.php'); ?>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

@@ -1,6 +1,9 @@
 <?php
 session_start();
-require("functions/security.php");
+require_once("functions/security.php");
+require_once('cart_functions.php');
+checkCartItems();
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Guardar los datos del formulario en la sesión
     $_SESSION['user_address'] = [

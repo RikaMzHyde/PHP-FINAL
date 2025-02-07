@@ -1,13 +1,30 @@
+<?php 
+$url_session = 'user_session.php';
+$rol = $_SESSION['rol'] ?? '';
+switch ($rol){
+    case 'EDITOR':
+        $url_session = 'editor_session.php';
+        break;
+    case 'ADMIN':
+        $url_session = 'admin_session.php';
+        break;
+}
+?>
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
         <!-- <a class="navbar-brand fs-2" href="#">Amato</a> -->
-        <img src="imgs\Amato.png" alt="Amato" style="height: 90px; width: 220px">
+        <a href="index.php"><img src="imgs\Amato.png" alt="Amato" style="height: 90px; width: 220px"></a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
+                <?php if(isset($_SESSION['usuario']['nombre'])){ ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= $url_session ?>">Bienvenido <?= $_SESSION['usuario']['nombre'] ?>! </a>
+                </li>
+                <?php } ?>
                 <li class="nav-item">
                     <a class="nav-link" href="index.php">Inicio</a>
                 </li>
@@ -23,7 +40,7 @@
                 }
                 ?>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= isset($_SESSION["dni"]) && !empty($_SESSION["dni"]) ? 'user_session.php' : 'login.php' ?>">
+                    <a class="nav-link" href="<?= isset($_SESSION["dni"]) && !empty($_SESSION["dni"]) ? $url_session : 'login.php' ?>">
                         <i class="bi bi-person"></i> 
                         <?= isset($_SESSION["dni"]) && !empty($_SESSION["dni"]) ? 'Mi Cuenta' : 'Iniciar sesión' ?>
                     </a>
@@ -79,7 +96,9 @@
     document.addEventListener('DOMContentLoaded', () => {
         const currentPage = window.location.pathname.split('/').pop();
         const navLinks = document.querySelectorAll('.nav-link');
-        const forbiddenSummaryCartLinks = ["order_confirmation", "user_address", "payment", "successful_payment"];
+        // Lista de direcciones que no pueden mostrar el carrito
+        const forbiddenSummaryCartLinks = ["order_confirmation", "user_address", "payment", "successful_payment", "admin_session", 
+            "newuser_admin", "modify_admin", "search_user", "editor_articles", "new_article", "editor_session", "new_article", "delete_article"];
         navLinks.forEach(link => {
             if (link.getAttribute('href') === currentPage) {
                 link.classList.add('active');

@@ -296,7 +296,7 @@ class Usuario
                 $query = "UPDATE usuarios SET nombre = :nombre, direccion = :direccion, localidad = :localidad, provincia = :provincia, telefono = :telefono, email = :email";
                 if($password != null)
                     $query .= " , password = :password";
-                if($admin != null && $editor != null)
+                if($admin !== null && $editor !== null)
                     $query .= " , admin = :admin, editor = :editor";
                 $query .= " WHERE dni = :dni";
                 //Consulta para actualizar los datos del usuarios en la BD
@@ -310,7 +310,8 @@ class Usuario
                 $stmt->bindParam(":email", $email);
                 if($password != null)
                     $stmt->bindParam(":password", $hashNuevoPwd);
-                if($admin != null && $editor != null) {
+                
+                if($admin !== null && $editor !== null) {
                     $stmt->bindParam(":admin", $admin);
                     $stmt->bindParam(":editor", $editor);
                 }

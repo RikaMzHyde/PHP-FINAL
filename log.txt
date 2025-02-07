@@ -1,0 +1,53 @@
+[2025-02-05 01:35:24] El id pedido es 24
+[2025-02-05 01:38:29] Insertando detalle pedido 25
+[2025-02-05 01:38:29] Insertando detalle pedido en apiBD con parametros 25 NUM13241 2.49 1
+[2025-02-05 01:38:29] Lanzando execute
+[2025-02-05 01:38:29] Detalle pedido insertado :1
+[2025-02-06 22:39:44] total codes: Array
+[2025-02-06 22:39:45] total codes: Array
+[2025-02-06 22:39:59] total codes: 
+[2025-02-06 22:39:59] total codes: 
+[2025-02-06 22:40:16] total codes: 0
+[2025-02-06 22:40:17] total codes: 0
+[2025-02-06 22:41:31] total codes: 0
+[2025-02-06 22:41:32] total codes: 0
+[2025-02-06 22:41:42] total codes: 0
+[2025-02-06 22:41:42] total codes: 0
+[2025-02-06 22:41:49] total codes: 0
+[2025-02-06 22:41:50] total codes: 0
+[2025-02-06 22:42:25] total codes: 0
+[2025-02-06 22:42:25] total codes: 0
+[2025-02-06 22:42:45] total codes: 0
+[2025-02-06 22:42:45] total codes: 0
+[2025-02-06 22:42:56] total codes: 0
+[2025-02-06 22:42:56] total codes: 0
+[2025-02-06 22:44:10] total codes: 0
+[2025-02-06 22:44:10] total codes: 0
+[2025-02-06 22:44:22] total codes: 0
+[2025-02-06 22:44:23] total codes: 0
+[2025-02-06 22:45:11] total codes: 0
+[2025-02-06 22:45:11] total codes: 0
+[2025-02-06 23:03:43] total itemss : 0
+[2025-02-06 23:03:43] Heading to cart.php
+[2025-02-06 23:06:26] total itemss : 0
+[2025-02-06 23:06:26] Heading to cart.php
+[2025-02-06 23:06:30] total itemss : 0
+[2025-02-06 23:06:30] Heading to cart.php
+[2025-02-06 23:06:36] total itemss : 0
+[2025-02-06 23:06:36] Heading to cart.php
+[2025-02-06 23:06:53] total itemss : 0
+[2025-02-06 23:06:53] Heading to cart.php
+[2025-02-07 00:12:53] admin: 
+[2025-02-07 00:12:53] editor
+[2025-02-07 00:14:18] admin: 
+[2025-02-07 00:14:18] editor
+[2025-02-07 00:14:18] 1
+[2025-02-07 00:16:45] admin: 0
+[2025-02-07 00:16:45] editor0
+[2025-02-07 00:18:26] admin: 0
+[2025-02-07 00:18:26] editor0
+[2025-02-07 00:19:03] admin: 0
+[2025-02-07 00:19:03] editor0
+[2025-02-07 00:21:19] admin value set to 0 and editor to 0
+[2025-02-07 00:23:09] admin value set to 0 and editor to 0
+[2025-02-07 00:23:09] admin value set to 0 and editor to 0

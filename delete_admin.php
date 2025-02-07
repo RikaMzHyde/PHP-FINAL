@@ -2,6 +2,40 @@
 require_once("connect.php");
 include("functions/security.php");
 include("user_class.php");
+
+//Verificamos si se ha proporcionado un DNI para saber qué usuario se va a eliminar
+if (isset($_GET["dni"])){
+    $dni = $_GET["dni"];
+
+    //Comprobar si el usuario intenta eliminarse a sí mismo
+    if (isset($_SESSION["dni"]) && $_SESSION["dni"] == $dni){
+        //Si el DNI de la sesión es igual al DNI que se quiere eliminar, mostramos un mensaje de error
+        echo "<p style='color: red; text-align: center;'>¡No puedes eliminarte a ti mismo!</p>";
+    } else {
+        //Usamos la clase usuario para obtener los datos del usuario con ese DNI
+        $usuario = Usuario::obtenerUsuarioDNI($dni);
+    }
+}
+//Verificamos si el formulario se ha enviado confirmando la eliminación
+if (isset($_POST["confirmar"])){
+    $dni = $_POST["dni"];
+
+    //Verificamos si el usuario que está intentando eliminar es el mismo que el que está logeado
+    if (isset($_SESSION["dni_usuario"]) && $_SESSION["dni_usuario"] == $dni) {
+        //Si el DNI de la sesión es igual al DNI a eliminar, mostramos un mensaje de error
+        $_SESSION["mensaje"] = "¡No puedes eliminarte a ti mismo!";
+    } else {
+        //Llamamos al método de la clase usuario para eliminarlo
+        if (Usuario::eliminarUsuario($dni)) {
+            $_SESSION["mensaje"] = '<p style="color: red; font-weight: bold; margin-top: 10px;">El usuario ha sido eliminado</p>';
+        } else {
+            $_SESSION["mensaje"] = '<p style="color: red; font-weight: bold; margin-top: 10px;">Error al intentar eliminar el usuario</p>';
+        }
+    }
+    header("Location: admin_session.php");
+    exit();
+}
+        
 ?>
 
 <!DOCTYPE html>
@@ -10,8 +44,10 @@ include("user_class.php");
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="stylesheet.css">
-    <title>Ejercicio PDO</title>
+    <link rel="stylesheet" href="stylesheetcart.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <title>Eliminar</title>
 
     <style>
         table {
@@ -60,29 +96,13 @@ include("user_class.php");
 </head>
 
 <body>
-
+<?php require('navbar.php'); ?>
+<main>
     <div class="vh-center">
         <div id="contenedor" style="display: inline-block; width: auto; max-width: none;">
             <h2 class="titulo">Confirmar Eliminación</h2>
-
-            <?php
-            //Verificamos si se ha proporcionado un DNI para saber qué usuario se va a eliminar
-            if (isset($_GET["dni"])):
-                $dni = $_GET["dni"];
-
-                //Comprobar si el usuario intenta eliminarse a sí mismo
-                if (isset($_SESSION["dni"]) && $_SESSION["dni"] == $dni):
-                    //Si el DNI de la sesión es igual al DNI que se quiere eliminar, mostramos un mensaje de error
-                    echo "<p style='color: red; text-align: center;'>¡No puedes eliminarte a ti mismo!</p>";
-                else:
-                    //Usamos la clase usuario para obtener los datos del usuario con ese DNI
-                    $usuario = Usuario::obtenerUsuarioDNI($dni);
-            ?>
-
-                    <?php if ($usuario): ?>
+                    <?php if ($usuario){ ?>
                         <p style="color: white; text-align: center;">¿Estás seguro de que deseas eliminar al siguiente usuario?</p>
-
-
                         <div id="login">
                             <table class="tabla-detalles">
                                 <tr>
@@ -113,36 +133,14 @@ include("user_class.php");
                             <button type="submit" name="confirmar" class="btn btn-eliminar">Sí</button>
                             <button type="button" class="btn btn-cancelar" onclick="history.back()">No, Volver Atrás</button>
                         </form>
-
-                    <?php else: ?>
+                    <?php } else { ?>
                         <p style="color: white; text-align: center;">Error: El usuario no existe.</p>
-                    <?php endif; ?>
-                <?php endif; ?>
-
-            <?php
-            //Verificamos si el formulario se ha enviado confirmando la eliminación
-            elseif (isset($_POST["confirmar"])):
-                $dni = $_POST["dni"];
-
-                //Verificamos si el usuario que está intentando eliminar es el mismo que el que está logeado
-                if (isset($_SESSION["dni_usuario"]) && $_SESSION["dni_usuario"] == $dni) {
-                    //Si el DNI de la sesión es igual al DNI a eliminar, mostramos un mensaje de error
-                    $_SESSION["mensaje"] = "¡No puedes eliminarte a ti mismo!";
-                } else {
-                    //Llamamos al método de la clase usuario para eliminarlo
-                    if (Usuario::eliminarUsuario($dni)) {
-                        $_SESSION["mensaje"] = '<p style="color: red; font-weight: bold; margin-top: 10px;">El usuario ha sido eliminado</p>';
-                    } else {
-                        $_SESSION["mensaje"] = '<p style="color: red; font-weight: bold; margin-top: 10px;">Error al intentar eliminar el usuario</p>';
-                    }
-                }
-                header("Location: admin_session.php");
-            ?>
-            <?php else: ?>
-                <p style="color: red; text-align: center;">Error: Falta el DNI.</p>
-            <?php endif; ?>
+                    <?php } ?>
         </div>
     </div>
+    </main>
+    <?php require('footer.php'); ?>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

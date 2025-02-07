@@ -62,36 +62,44 @@ if (isset($_POST["confirmar"])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="stylesheet.css">
-    <title>Ejercicio PDO</title>
+    <link rel="stylesheet" href="stylesheetcart.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <title>Borrar usuario</title>
 </head>
 
 <body>
+    <?php require('navbar.php') ?>
+    <main class="py-5">
 
-    <div class="vh-center">
-        <div id="contenedor">
-            <div>
-                <h1 class="titulo">Mi Cuenta</h1>
-                <h2 style="color: white">Mis Datos</h2>
-                <p style="color: white">¿Seguro que quieres eliminar tu cuenta? Si es así, pulsa "Confirmar".</p>
 
-                <form method="POST" action="delete_user.php">
-                    <input type="text" name="dni" value="<?php echo $dni; ?>" disabled placeholder="DNI">
-                    <input type="text" name="nombre" value="<?php echo $nombre; ?>" disabled placeholder="Nombre">
-                    <input type="text" name="direccion" value="<?php echo $direccion; ?>" disabled placeholder="Dirección">
-                    <input type="text" name="localidad" value="<?php echo $localidad; ?>" disabled placeholder="Localidad">
-                    <input type="text" name="provincia" value="<?php echo $provincia; ?>" disabled placeholder="Provincia">
-                    <input type="text" name="telefono" value="<?php echo $telefono; ?>" disabled placeholder="Teléfono">
-                    <input type="email" name="email" value="<?php echo $email; ?>" disabled placeholder="Email">
-                    <input type="password" name="password" value="<?php echo $password; ?>" disabled
-                        placeholder="Contraseña">
+        <div class="vh-center">
+            <div id="contenedor">
+                <div>
+                    <h1 class="titulo">Mi Cuenta</h1>
+                    <p style="color: white">¿Seguro que quieres eliminar tu cuenta? Si es así, pulsa "Confirmar".</p>
 
-                    <button type="submit" name="confirmar">Confirmar</button>
-                    <button type="button" onclick="history.back()">Volver</button>
-                </form>
+                    <form method="POST" action="delete_user.php">
+                        <input type="text" name="dni" value="<?php echo $dni; ?>" disabled placeholder="DNI">
+                        <input type="text" name="nombre" value="<?php echo $nombre; ?>" disabled placeholder="Nombre">
+                        <input type="text" name="direccion" value="<?php echo $direccion; ?>" disabled placeholder="Dirección">
+                        <input type="text" name="localidad" value="<?php echo $localidad; ?>" disabled placeholder="Localidad">
+                        <input type="text" name="provincia" value="<?php echo $provincia; ?>" disabled placeholder="Provincia">
+                        <input type="text" name="telefono" value="<?php echo $telefono; ?>" disabled placeholder="Teléfono">
+                        <input type="email" name="email" value="<?php echo $email; ?>" disabled placeholder="Email">
+                        <input type="password" name="password" value="<?php echo $password; ?>" disabled
+                            placeholder="Contraseña">
+
+                        <button type="submit" name="confirmar">Confirmar</button>
+                        <button type="button" onclick="history.back()">Volver</button>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
+    </main>
+    <?php require('footer.php'); ?>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>
