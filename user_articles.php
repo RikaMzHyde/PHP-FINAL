@@ -1,4 +1,5 @@
 <?php
+//Ya no se usa, sustituído por el índex
 require_once("connect.php");
 include("functions/security.php");
 include("user_class.php");

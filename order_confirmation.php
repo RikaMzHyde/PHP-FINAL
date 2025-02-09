@@ -1,7 +1,7 @@
 <?php
 require_once("functions/security.php");
 require_once('cart_functions.php');
-checkCartItems();
+checkCartItems(); //Verificar si el carrito tiene items
 require_once("connect.php");
 ?>
 
@@ -19,29 +19,31 @@ require_once("connect.php");
 
 <body class="d-flex flex-column min-vh-100">
     <script>
+        //Modificar cantidad de producto en el carrito
         const modifyQuantity = (name, price, action) => {
+            //Solicitud con POST a "carritoApi" con los datos correspondientes
             fetch('carritoApi.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        action: action,
-                        price: price,
-                        name: name
-                    })
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    action: action, //Incrementar o disminuir cantidad
+                    price: price,
+                    name: name
                 })
-                .then(response => response.json())
+            })
+                .then(response => response.json()) //Convierte respuesta a JSON
                 .then(data => {
                     if (data.success) {
-                        loadCart(); // Recarga la UI del carrito
+                        loadCart(); //Recarga la UI del carrito si la operación ha sido exitosa
                     } else {
                         alert(data.message || 'Error al modificar la cantidad');
                     }
                 })
                 .catch(error => console.error('Error:', error));
         }
-    </script>    
+    </script>
     <?php require('navbar.php') ?>
     <main class="py-5">
         <div class="container">
@@ -60,7 +62,7 @@ require_once("connect.php");
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Cargado desde función updateCartUI -->
+                                <!-- Elementos del carrito cargados desde función updateCartUI -->
                             </tbody>
                             <tfoot>
                                 <tr>
@@ -72,6 +74,7 @@ require_once("connect.php");
                         </table>
                     </div>
                     <div class="d-flex justify-content-center mt-4">
+                        <!--Botones para volver a mi cesta o confirmar el pedido-->
                         <a href="cart.php" class="btn btn-custom me-2">Volver a Mi Cesta</a>
                         <a href="user_address.php" class="btn btn-custom">Confirmar</a>
                     </div>
@@ -83,11 +86,14 @@ require_once("connect.php");
     <?php require('footer.php'); ?>
 
     <script>
+        //Función para cargar los productos del carrito
         async function loadCart() {
             try {
+                //Pide los datos del carrito a "carritoApi"
                 const response = await fetch('carritoApi.php', { method: 'GET' });
                 if (!response.ok) throw new Error('Error al cargar el carrito');
 
+                //Convierte la respuesta a JSON y actualiza la UI(interfaz) del carrito
                 const cartData = await response.json();
                 updateCartUI(cartData);
             } catch (error) {
@@ -95,17 +101,19 @@ require_once("connect.php");
             }
         }
 
+        //Función que actualiza la interfaz de usuario con los datos del carrito
         function updateCartUI(cart) {
-            const cartTableBody = document.querySelector('tbody');
-            const cartTotal = document.querySelector('#total_cart_price');
-            const cartItemsCount = document.querySelector('#cart-items-count');
-            const cartTotalPrice = document.querySelector('#cart-total-price');
+            const cartTableBody = document.querySelector('tbody'); //Selecciona cuerpo de la tabla donde se mostrarán los productos
+            const cartTotal = document.querySelector('#total_cart_price'); //Selecciona el elementos para mostrar el total
+            const cartItemsCount = document.querySelector('#cart-items-count'); //Cuenta artículos
+            const cartTotalPrice = document.querySelector('#cart-total-price'); //Mustra totoal en el pie de tabla
             let totalPrice = 0;
             let totalItems = 0;
 
-            cartTableBody.innerHTML = '';
+            cartTableBody.innerHTML = ''; //Limpia el cuerpo de la tabla antes de agregar productos
 
             if (cart.length === 0) {
+                //Si no hay productos en el carrito, muestra mensaje 
                 cartTableBody.innerHTML = '<tr><td colspan="5" class="text-center">No hay productos en el carrito</td></tr>';
                 cartTotal.textContent = '0.00';
                 cartTotalPrice.textContent = '0.00';
@@ -113,11 +121,13 @@ require_once("connect.php");
                 return;
             }
 
+            //Itera sobre los productos del carrito para mostrar los detalles
             cart.forEach(item => {
-                const subtotal = item.price * item.quantity;
-                totalPrice += subtotal;
-                totalItems += item.quantity;
+                const subtotal = item.price * item.quantity; //Calcular subtotal de cada prod
+                totalPrice += subtotal; //Suma al total el subtotal
+                totalItems += item.quantity; //Suma al total el número de unidades
 
+                //Agregar una fila a la tabla para cada producto con sus detalles
                 cartTableBody.innerHTML += `
                     <tr>
                         <td>${item.name}</td>
@@ -130,20 +140,13 @@ require_once("connect.php");
                     </tr>`;
             });
 
+            //Muestra el total del carrito
             cartTotal.textContent = totalPrice.toFixed(2) + " €";
             cartTotalPrice.textContent = totalPrice.toFixed(2);
             cartItemsCount.textContent = totalItems;
         }
+        //Llama a la función para cargar el carrito al cargar la página
         loadCart();
-
-        // // Add event listeners to remove buttons
-        // document.querySelectorAll('.remove-item').forEach(button => {
-        //     button.addEventListener('click', (event) => {
-        //         event.preventDefault();
-        //         const name = event.target.closest('.remove-item').getAttribute('data-name');
-        //         removeFromCart(name);
-        //     });
-        // });
     </script>
 </body>
 

@@ -10,7 +10,7 @@
                 <ul class="list-unstyled">
                     <li><a href="#" class="text-decoration-none txt-custom">Política de Privacidad</a></li>
                     <li><a href="#" class="text-decoration-none txt-custom">Términos y Condiciones</a></li>
-                    <li><a href="#" class="text-decoration-none txt-custom">Contacto</a></li>
+                    <li><a href="contact.php" class="text-decoration-none txt-custom">Contacto</a></li>
                 </ul>
             </div>
             <div class="col-md-3">

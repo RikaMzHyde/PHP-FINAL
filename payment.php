@@ -1,67 +1,68 @@
 <?php
 session_start();
+
 require_once("functions/security.php");
 require_once('cart_functions.php');
-checkCartItems();
 
-require_once 'apiBD.php'; // Incluir el archivo de la base de datos
-// echo '<pre>';
-// echo 'Debug variables';
-// var_dump($_SESSION);
-// var_dump($_POST);
-// echo '</pre>';
-// Verificar si se ha iniciado un pago
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['cart']) && !empty($_SESSION['cart']) && isset($_SESSION['dni']) && !empty($_SESSION['dni'])) {
-    $dni = $_SESSION['dni']; // DNI del usuario desde la sesión
-    $fecha = date('Y-m-d H:i:s'); // Fecha actual
-    $total = 0;
+// Verificar si el carrito no está vacío y si el DNI del usuario está almacenado en la sesión
+checkCartItems(); //Verificar si el carrito tiene items
+require_once 'apiBD.php'; //Incluir el archivo de la base de datos
+if (isset($_SESSION['cart']) && !empty($_SESSION['cart']) && isset($_SESSION['dni']) && !empty($_SESSION['dni'])) {
+    $dni = $_SESSION['dni']; //DNI del usuario desde la sesión
+    $fecha = date('Y-m-d H:i:s'); //Fecha actual
+    $total = 0; //Total del pedido inicializado
 
-    // Obtener los detalles del carrito
+    // Obtener los códigos de los productos del carrito y cantidad de cada uno
     $codes = array_column($_SESSION['cart'], 'code');
     $quantityMap = array_column($_SESSION['cart'], 'quantity', 'code');
+    //Crear placeholder para consulta SQL con los códigos de los productos
     $placeholders = str_repeat('?,', count($codes) - 1) . '?';
+    //Obtener detalles de los productos en el carrito desde la BD
     $orderDetails = getCartItems($codes, $quantityMap, $placeholders);
 
-    // Calcular el total del pedido
+    //Calcular el total del pedido
     foreach ($orderDetails as $product) {
         $total += $product['price'] * $product['quantity'];
     }
     print_r($orderDetails);
 
-    // Iniciar una transacción
+    //Iniciar conexión y transacción
     $conn = conectar_db();
     $conn->beginTransaction();
 
     try {
-        // Insertar el pedido en la base de datos
+        //Insertar el pedido en la base de datos
         $idPedido = insertarPedido($conn, $fecha, $total, 'Pendiente', $dni);
 
-        // Insertar los detalles del pedido
+        //Insertar los detalles de los productos dentro del pedido
         foreach ($orderDetails as $product) {
             $success = insertarDetallePedido($conn, $idPedido, $product['code'], $product['price'], $product['quantity']);
+            //Si algo falla, lanzar un except para revertir la transacción
             if (!$success) {
                 throw new Exception("Error al insertar el detalle del pedido.");
             }
         }
 
-        // Confirmar la transacción
+        //Si todo va bien, confirmar la transacción
         $conn->commit();
 
-        // Guardar el ID del pedido en la sesión para usarlo en successful_payment
+        //Guardar el ID del pedido en la sesión para usarlo en successful_payment
         $_SESSION['id_pedido'] = $idPedido;
-        $_SESSION['pago'] = $_POST['pago'];
 
-        // Redirigir al archivo successful_payment
+        //Redirigir a successful_payment
         header('Location: successful_payment.php');
         exit();
     } catch (Exception $e) {
-        // Revertir la transacción en caso de error
+        //Revertir la transacción en caso de error
         $conn->rollBack();
         echo "Error: " . $e->getMessage();
     }
+} else {
+    echo "Error, datos no encontrados.";
+    exit();
 }
 ?>
-
+<!--
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -132,4 +133,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['cart']) && !empty(
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
+-->

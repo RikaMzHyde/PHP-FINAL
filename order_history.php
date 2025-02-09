@@ -5,15 +5,28 @@ require_once 'apiBD.php';
 
 //vaciar el carrito al tener todo hecho
 if (isset($_SESSION['pedido_completado']) && $_SESSION['pedido_completado'] === true) {
-    unset($_SESSION['cart']); // Vacía el carrito
-    unset($_SESSION['pedido_completado']); // Elimina la marca de pedido completado
+    unset($_SESSION['cart']); //Vacía el carrito
+    unset($_SESSION['pedido_completado']); //Elimina la marca de pedido completado
 }
 
+//Cogemos el dni del cliente de la sesión
+$dniCliente = $_SESSION['dni'];
+
+//Configuración de paginación
+$porPagina = 10; //Cantidad de pedidos por página
+$pagina = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1; //Obtener página actual
 
 $dniCliente = $_SESSION['dni'];
-// echo $dniCliente;
-$pedidos = obtenerPedidos($dniCliente);
-
+//obtenemos los pedidos del cliente con paginación
+$resultado = obtenerPedidos($dniCliente, $porPagina, $pagina);
+$pedidos = $resultado['pedidos'];
+$totalPedidos = $resultado['total'];
+$totalPaginas = ceil($totalPedidos / $porPagina);
+//Si la pagina solicitada excede el total de páginas te redirige a la última válida
+if ($pagina > $totalPaginas && $totalPaginas > 0) {
+    header("Location: ?page=" . $totalPaginas);
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -32,6 +45,7 @@ $pedidos = obtenerPedidos($dniCliente);
     <?php require('navbar.php'); ?>
     <main class="flex-grow-1 py-5">
         <div class="container">
+            <!-- Muestra mensajes de éxito si hay -->
             <?php if (isset($_SESSION['mensaje'])): ?>
                 <div class="alert alert-success" role="alert">
                     <?php echo $_SESSION['mensaje'];
@@ -43,6 +57,7 @@ $pedidos = obtenerPedidos($dniCliente);
                 <div class="card-body">
                     <h2 class="card-title text-center mb-4">Historial de Pedidos</h2>
                     <div class="table-responsive">
+                        <!-- Tabla de pedidos -->
                         <table class="table">
                             <thead>
                                 <tr>
@@ -54,6 +69,7 @@ $pedidos = obtenerPedidos($dniCliente);
                                 </tr>
                             </thead>
                             <tbody>
+                                <!-- Listado de pedidos -->
                                 <?php if (!empty($pedidos)): ?>
                                     <?php foreach ($pedidos as $pedido): ?>
                                         <tr>
@@ -62,11 +78,13 @@ $pedidos = obtenerPedidos($dniCliente);
                                             <td><?php echo number_format($pedido['total'], 2); ?>€</td>
                                             <td><?php echo htmlspecialchars($pedido['estado']); ?></td>
                                             <td>
+                                                <!-- Ver más detalles del pedido -->
                                                 <a href="order_view.php?numero_pedido=<?= urlencode($pedido['numero_pedido']); ?>&fecha=<?= urlencode($pedido['fecha']); ?>&total=<?= urlencode($pedido['total']); ?>&estado=<?= urlencode($pedido['estado']); ?>"
                                                     class="btn btn-custom btn-sm">Ver</a>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
+                                    <!-- Si no hay pedidos muestra el mensaje -->
                                 <?php else: ?>
                                     <tr>
                                         <td colspan="6" class="text-center">No hay pedidos disponibles.</td>
@@ -74,6 +92,25 @@ $pedidos = obtenerPedidos($dniCliente);
                                 <?php endif; ?>
                             </tbody>
                         </table>
+
+                        <!-- Páginación -->
+                        <nav aria-label="Navegación de páginas">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item <?= $pagina <= 1 ? 'disabled' : '' ?>">
+                                    <a class="btn btn-custom me-2" href="?page=<?= $pagina - 1 ?>">Anterior</a>
+                                </li>
+
+                                <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+                                    <li class="page-item <?= $i == $pagina ? 'active' : '' ?>">
+                                        <a class="btn btn-custom me-2" href="?page=<?= $i ?>"><?= $i ?></a>
+                                    </li>
+                                <?php endfor; ?>
+
+                                <li class="page-item <?= $pagina >= $totalPaginas ? 'disabled' : '' ?>">
+                                    <a class="btn btn-custom ms-2" href="?page=<?= $pagina + 1 ?>">Siguiente</a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>

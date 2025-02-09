@@ -44,6 +44,19 @@ html, body {
     min-height: 50px;
 }
 
+.card-img-top {
+    height: 450px; /* Altura fija para el contenedor de la imagen */
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-img-top img {
+    width: 100%;
+    height: 500px;
+    object-fit: cover; /* Mantiene la proporción de la imagen */
+}
 .card-price {
     color:rgb(80, 255, 203);
     align-self: center;
@@ -81,6 +94,7 @@ html, body {
 
 .product-description {
     display: -webkit-box;
+    min-height: 100px;
     -webkit-line-clamp: 4;
     /* Limita el número de líneas */
     -webkit-box-orient: vertical;
@@ -221,7 +235,7 @@ html, body {
     text-decoration: underline;
 }
 
-
+/*Error con img cool*/
 .error{
     color: #D8000C;
     background-color: #FFBABA;
@@ -235,4 +249,8 @@ html, body {
     padding: 15px 10px 15px 50px;
     background-repeat: no-repeat;
     background-position: 10px center;
+}
+
+#nav-login {
+    margin: auto 0;
 }

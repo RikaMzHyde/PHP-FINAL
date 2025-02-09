@@ -5,8 +5,9 @@ $mensajeEliminado = "";
 $mensajeError = "";
 $mensajeConfirmacion = "";
 
+//Si el formulario de login se ha enviado (es POST)
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    //Obtenemos el nombre y contraseña del usuario
+    //Obtenemos el nombre(dni) y contraseña del usuario
     $dni = $_POST["dni"];
     $password = $_POST["password"];
 
@@ -16,6 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($usuarioObj) {
         //Almacena el DNI en la sesión (como cadena, no objeto)
         $_SESSION["dni"] = $dni;
+        //Obtiene los datos del usuario a partir del dni
         $usuarioSesion = Usuario::obtenerUsuarioDNI($dni);
 
         //Si se ha obtenido el usuario
@@ -29,6 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 'telefono' => $usuarioSesion->getTelefono(),
                 'email' => $usuarioSesion->getEmail()
             ];
+            //Guardamos datos del user en la sesión
             $_SESSION['usuario'] = $datosUsuario;
             
         }
@@ -111,7 +114,7 @@ if (isset($_SESSION["mensajeEliminado"])) {
                         <?php echo $mensajeConfirmacion; ?>
                     </div>
                 <?php endif; ?>
-
+                <!-- Formulario en sí -->
                 <form action="login.php" method="POST">
                     <input type="text" name="dni" placeholder="DNI (Usuario)" required>
                     <input type="password" placeholder="Contraseña" name="password" required>
@@ -126,6 +129,7 @@ if (isset($_SESSION["mensajeEliminado"])) {
                 <?php endif; ?>
                 <div class="footer">
                 <br>
+                <!-- Enlaces para registrarse y recuperar pw -->
                     <a href="new_user.php">¿Es tu primera vez aquí? ¡Registrate!</a>
                     <br><br>
                     <a href="recover_password.php">¿Has olvidado la contraseña?</a>

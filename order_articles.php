@@ -1,3 +1,4 @@
+<!--Tabla con la información del pedido-->
 <table class="table table-bordered mb-4">
     <thead>
         <tr>

@@ -1,4 +1,5 @@
 <?php
+//Inicimos la sesión y requiere los archivos necesarios
 require_once("connect.php");
 session_start();
 
@@ -11,15 +12,23 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amato - Inicio</title>
+
+    <!-- Importar estilos y toast-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
     <link rel="stylesheet" href="stylesheetcart.css">
 </head>
 
 <body class="d-flex flex-column min-vh-100">
+    <!-- Require para incluir el navbar -->
     <?php require('navbar.php'); ?>
 
     <main class="flex-grow-1">
+        <!-- Carrusel para las imágenes-->
         <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-indicators">
                 <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="0" class="active"></button>
@@ -41,6 +50,7 @@ session_start();
                     <img src="productos\sld-ramen-chikin-duo-japonshop(1).jpg" class="d-block w-100" alt="Slide 4">
                 </div>
             </div>
+            <!-- Controles para el carrusel -->
             <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon"></span>
                 <span class="visually-hidden">Anterior</span>
@@ -50,7 +60,7 @@ session_start();
                 <span class="visually-hidden">Siguiente</span>
             </button>
         </div>
-
+        <!-- Sección para la bienvenida-->
         <section class="py-5">
             <div class="container">
                 <h2 class="text-center mb-4 txt-custom">¡Bienvenidos a Amato!</h2>
@@ -58,17 +68,19 @@ session_start();
                     Amato ofrecemos una amplia variedad de artículos de alta calidad a los mejores precios ✨🌸</p>
             </div>
         </section>
-
+        <!-- Sección del buscador de productos-->
         <section class="py-5" style="background-color: #4e4363;">
             <div class="container">
                 <h2 class="text-center mb-4 txt-custom">Buscador</h2>
                 <form action="index.php" method="GET" class="d-flex justify-content-center">
-                    <input class="form-control me-2 w-50" type="search" placeholder="¿Qué estás buscando?" aria-label="Search" name="buscar">
+                    <input class="form-control me-2 w-50" type="search" placeholder="¿Qué estás buscando?"
+                        aria-label="Search" name="buscar">
                     <button class="btn btn-custom ms-2" type="submit">Buscar</button>
                 </form>
             </div>
         </section>
 
+        <!-- Sección para mostrar los productos-->
         <section class="py-5">
 
             <section class="py-5">
@@ -85,7 +97,8 @@ session_start();
                                         <div class="accordion-item">
                                             <div class="accordion-item">
                                                 <h2 class="accordion-header">
-                                                    <button class="accordion-button collapsed bg-transparent txt-custom py-5"
+                                                    <button
+                                                        class="accordion-button collapsed bg-transparent txt-custom py-5"
                                                         type="button" data-bs-toggle="collapse"
                                                         data-bs-target="#todosCollapse">
                                                         Todos
@@ -95,14 +108,17 @@ session_start();
                                                     data-bs-parent="#categoriesAccordion">
                                                     <div class="accordion-body">
                                                         <ul class="list-unstyled mb-0">
-                                                            <li><a href="index.php" class="txt-custom text-decoration-none">Ver todo</a></li>
+                                                            <li><a href="index.php"
+                                                                    class="txt-custom text-decoration-none">Ver todo</a>
+                                                            </li>
                                                         </ul>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="accordion-item">
                                                 <h2 class="accordion-header">
-                                                    <button class="accordion-button collapsed bg-transparent txt-custom py-5"
+                                                    <button
+                                                        class="accordion-button collapsed bg-transparent txt-custom py-5"
                                                         type="button" data-bs-toggle="collapse"
                                                         data-bs-target="#ramenCollapse">
                                                         Ramen y Sopas
@@ -124,7 +140,8 @@ session_start();
                                             </div>
                                             <div class="accordion-item">
                                                 <h2 class="accordion-header">
-                                                    <button class="accordion-button collapsed bg-transparent txt-custom py-5"
+                                                    <button
+                                                        class="accordion-button collapsed bg-transparent txt-custom py-5"
                                                         type="button" data-bs-toggle="collapse"
                                                         data-bs-target="#dulcesCollapse">
                                                         Dulces
@@ -149,7 +166,8 @@ session_start();
                                             </div>
                                             <div class="accordion-item">
                                                 <h2 class="accordion-header">
-                                                    <button class="accordion-button collapsed bg-transparent txt-custom py-5"
+                                                    <button
+                                                        class="accordion-button collapsed bg-transparent txt-custom py-5"
                                                         type="button" data-bs-toggle="collapse"
                                                         data-bs-target="#snacksCollapse">
                                                         Snacks
@@ -171,7 +189,8 @@ session_start();
                                             </div>
                                             <div class="accordion-item">
                                                 <h2 class="accordion-header">
-                                                    <button class="accordion-button collapsed bg-transparent txt-custom py-5"
+                                                    <button
+                                                        class="accordion-button collapsed bg-transparent txt-custom py-5"
                                                         type="button" data-bs-toggle="collapse"
                                                         data-bs-target="#bebidasCollapse">
                                                         Bebidas
@@ -200,29 +219,31 @@ session_start();
                         </div>
 
                         <!-- Área de productos -->
-                    <?php
-                    // Obtener la categoría seleccionada desde el parámetro GET (si está presente)
-                    $categoria = isset($_GET['categoria']) ? $_GET['categoria'] : '';
-                    // Obtener el término de búsqueda desde el parámetro GET (si está presente)
-                    $buscar = isset($_GET['buscar']) ? $_GET['buscar'] : '';
+                        <?php
+                        // Obtenemos la categoría seleccionada desde el parámetro GET (si existe)
+                        $categoria = isset($_GET['categoria']) ? $_GET['categoria'] : '';
+                        // Obtenemos el término de búsqueda desde el parámetro GET (si existe)
+                        $buscar = isset($_GET['buscar']) ? $_GET['buscar'] : '';
 
-                    // Configuración para paginación
-                    $productos_por_pagina = 11;
-                    $pagina_actual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
-                    $offset = ($pagina_actual - 1) * $productos_por_pagina;
-                    require_once('apiBD.php');
-                    $articulos = getArticulos($categoria, $buscar, $productos_por_pagina, $pagina_actual, $offset);
-                    
-                    // Mostrar los productos
-                    foreach ($articulos as $articulo){
-                        echo "<div class='col-md-2 mb-4'>
+                        // Configuración para la paginación
+                        $productos_por_pagina = 11;
+                        $pagina_actual = isset($_GET['pagina']) ? (int) $_GET['pagina'] : 1;
+                        $offset = ($pagina_actual - 1) * $productos_por_pagina;
+                        require_once('apiBD.php');
+                        $articulos = getArticulos($categoria, $buscar, $productos_por_pagina, $pagina_actual, $offset);
+
+                        // Mostrar los productos
+                        foreach ($articulos as $articulo) {
+                            echo "<div class='col-md-2 mb-4'>
                                 <div class='card'>
-                                    <img src='" . $articulo['imagen'] . "' class='card-img-top' alt='Imagen del producto'>
+                                    <div class='card-img-top'>
+                                    <img src='" . $articulo['imagen'] . "'  alt='Imagen del producto'>
+                                    </div>
                                     <div class='card-body'>
                                         <h5 class='card-title fw-bold'>" . $articulo['nombre'] . "</h5>
                                         <p class='card-text product-description'>" . $articulo['descripcion'] . "</p>
                                         <div class='d-inline-flex'>
-                                            <button onclick=\"addToCart(".$articulo['precio'].", '".$articulo['nombre']. "', '".$articulo['codigo']."')\" class='btn btn-custom' data-price='" . $articulo['precio'] . "'>
+                                            <button onclick=\"addToCart(" . $articulo['precio'] . ", '" . $articulo['nombre'] . "', '" . $articulo['codigo'] . "')\" class='btn btn-custom' data-price='" . $articulo['precio'] . "'>
                                                 <i class='bi bi-cart-plus me-2' style='font-size: 1.3em;'></i> Añadir al carrito
                                             </button>
                                             <div class='card-price fw-bold ms-3'>" . $articulo['precio'] . "€</div>
@@ -231,48 +252,62 @@ session_start();
                                     </div>
                                 </div>
                             </div>";
-                    }
- 
-                    // Obtener el número total de productos para la paginación
-                    $total_productos = getTotalProductos($categoria, $buscar);
-                    $total_paginas = ceil($total_productos / $productos_por_pagina);
+                        }
 
-                    // Mostrar la paginación
-                    echo '<div class="pagination d-flex justify-content-center mt-4">';
-                    if ($pagina_actual > 1) {
-                        echo '<a href="?pagina=' . ($pagina_actual - 1) . '" class="btn btn-custom me-2">Anterior</a>';
-                    }
-                    for ($i = 1; $i <= $total_paginas; $i++) {
-                        echo '<a href="?pagina=' . $i . '" class="btn btn-custom me-2">' . $i . '</a>';
-                    }
-                    if ($pagina_actual < $total_paginas) {
-                        echo '<a href="?pagina=' . ($pagina_actual + 1) . '" class="btn btn-custom ms-2">Siguiente</a>';
-                    }
-                    echo '</div>';
-                    ?>
+                        // Obtener el número total de productos para la paginación
+                        $total_productos = getTotalProductos($categoria, $buscar);
+                        $total_paginas = ceil($total_productos / $productos_por_pagina);
+
+                        // Mostrar la paginación
+                        echo '<div class="pagination d-flex justify-content-center mt-4">';
+                        if ($pagina_actual > 1) {
+                            echo '<a href="?pagina=' . ($pagina_actual - 1) . '" class="btn btn-custom me-2">Anterior</a>';
+                        }
+                        for ($i = 1; $i <= $total_paginas; $i++) {
+                            echo '<a href="?pagina=' . $i . '" class="btn btn-custom me-2">' . $i . '</a>';
+                        }
+                        if ($pagina_actual < $total_paginas) {
+                            echo '<a href="?pagina=' . ($pagina_actual + 1) . '" class="btn btn-custom ms-2">Siguiente</a>';
+                        }
+                        echo '</div>';
+                        ?>
             </section>
     </main>
+    <!-- require para el footer-->
     <?php require('footer.php'); ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-
-        // Función para añadir un producto al carrito
+        // Función para añadir un producto al carrito (mostrar toast)
         function addToCart(price, name, code) {
             fetch('carritoApi.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        action: 'add',
-                        price: price,
-                        name: name,
-                        code: code
-                    })
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    action: 'add',
+                    price: price,
+                    name: name,
+                    code: code
                 })
+            })
                 .then(response => response.json())
                 .then(data => {
-                    alert(data.message);
+                    //alert(data.message);
+                    Toastify({
+                        text: data.message,
+                        duration: 1000,
+                        destination: "https://github.com/apvarun/toastify-js",
+                        newWindow: true,
+                        close: true,
+                        gravity: "top", // `top` or `bottom`
+                        position: "center", // `left`, `center` or `right`
+                        stopOnFocus: true, // Prevents dismissing of toast on hover
+                        style: {
+                            background: "linear-gradient(to right, #00b09b, #96c93d)",
+                        },
+                        onClick: function () { } // Callback after click
+                    }).showToast();
                     loadCartFromSession();
                 })
                 .catch(error => console.error('Error:', error));
