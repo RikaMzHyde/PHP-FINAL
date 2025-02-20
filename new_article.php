@@ -7,11 +7,16 @@ include("article_class.php");
 $mensajeError = "";
 $mensajeExito = "";
 
+$conn = conectar_db();
+$stmt = $conn->prepare("SELECT s.id, s.descripcion FROM subcategoria s ORDER BY s.descripcion");
+$stmt->execute();
+$subcategorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar'])) {
 
     $nombre = $_POST['nombre'];
     $descripcion = $_POST['descripcion'];
-    $categoria = $_POST['categoria'];
+    $id_subcategoria = $_POST['id_subcategoria'];
     $precio = $_POST['precio'];
     $nombre_archivo = $_FILES['imagen']['name'];
     $imagen = "productos/" . $nombre_archivo;
@@ -43,15 +48,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar'])) {
                 //Si el archivo se ha subido correctamente..
                 $conn = conectar_db();
                 if ($conn) {
-                    $articulo = new Articulo('aaa00000', $nombre, $descripcion, $categoria, $precio, $imagen);
+                    $articulo = new Articulo('aaa00000', $nombre, $descripcion, $id_subcategoria, $precio, $imagen);
                     $codigoArticulo = $articulo->codigoArticulo();
                     $articulo->setCodigo($codigoArticulo);
 
-                    $stmt = $conn->prepare("INSERT INTO articulos(codigo, nombre, descripcion, categoria, precio, imagen) VALUES (:codigo, :nombre, :descripcion, :categoria, :precio, :imagen)");
+                    $stmt = $conn->prepare("INSERT INTO articulos(codigo, nombre, descripcion, id_subcategoria, precio, imagen) VALUES (:codigo, :nombre, :descripcion, :id_subcategoria, :precio, :imagen)");
                     $stmt->bindParam(':codigo', $codigoArticulo);
                     $stmt->bindParam(':nombre', $nombre);
                     $stmt->bindParam(':descripcion', $descripcion);
-                    $stmt->bindParam(':categoria', $categoria);
+                    $stmt->bindParam(':id_subcategoria', $id_subcategoria);
                     $stmt->bindParam(':precio', $precio);
                     $stmt->bindParam(':imagen', $imagen);
 
@@ -134,7 +139,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar'])) {
             <form name="formarticulos" method="post" action="new_article.php" enctype="multipart/form-data">
                 <input name="nombre" type="text" id="tipo" maxlength="100" placeholder="Nombre" required>
                 <textarea name="descripcion" type="textarea" id="descripcion" maxlength="500" placeholder="Descripción" required rows="5" style="width: 100%; box-sizing: border-box; margin-bottom: 5px;"></textarea>
-                <input name="categoria" type="text" id="categoria" maxlength="40" placeholder="Categoría" required>
+               
+                <select name="id_subcategoria" id="id_subcategoria" class="form-select" required  style="width: 100%; box-sizing: border-box; margin-bottom: 5px;">
+                    <?php foreach ($subcategorias as $sub): ?>
+                        <option value="<?= $sub['id'] ?>" <?= (isset($subcategoria) && $subcategoria == $sub['id']) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($sub['descripcion']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+
                 <input name="precio" type="number" id="precio" step="0.01" min="0" max="999999999999.99" placeholder="Precio €" required>
                 <input
                     name="imagen"

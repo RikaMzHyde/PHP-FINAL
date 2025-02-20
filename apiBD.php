@@ -1,47 +1,47 @@
 <?php
 require_once("connect.php");
 
-//función para obtener artículos de la BD con los filtros y paginación
-function getArticulos($categoria, $buscar, $productos_por_pagina, $pagina_actual, $offset): array
+// Función para obtener artículos de la BD con filtros y paginación
+function getArticulos($subcategoria, $buscar, $productos_por_pagina, $pagina_actual, $offset): array
 {
     try {
-        //Conexión BD
+        // Conexión a la base de datos
         $conn = conectar_db();
         if (!$conn) {
             die("Error al conectar a la base de datos");
         }
 
-        //Consulta base
+        // Consulta base
         $sql = "SELECT * FROM articulos WHERE 1";
 
-        //Filtrar por categoría, si se seleccionó una
-        if ($categoria) {
-            $sql .= " AND categoria = :categoria";
+        // Filtrar por subcategoría, si se seleccionó una (se espera el id numérico)
+        if ($subcategoria) {
+            $sql .= " AND id_subcategoria = :subcategoria";
         }
 
-        //Filtrar por nombre de producto, si hay un término de búsqueda
+        // Filtrar por nombre de producto, si hay término de búsqueda
         if ($buscar) {
             $sql .= " AND nombre LIKE :buscar";
         }
 
-        //Agregar límite y offset para la paginación
+        // Agregar límite y offset para la paginación
         $sql .= " LIMIT :offset, :limite";
 
-        //Preparar la consulta
+        // Preparar la consulta
         $stmt = $conn->prepare($sql);
 
-        //Vincular los parámetros de la consulta
-        if ($categoria) {
-            $stmt->bindParam(':categoria', $categoria, PDO::PARAM_STR);
+        // Vincular los parámetros de la consulta
+        if ($subcategoria) {
+            $stmt->bindParam(':subcategoria', $subcategoria, PDO::PARAM_INT);
         }
         if ($buscar) {
-            $buscar = "%" . $buscar . "%"; // Utilizamos % para hacer la búsqueda parcial
+            $buscar = "%" . $buscar . "%"; // Búsqueda parcial
             $stmt->bindParam(':buscar', $buscar, PDO::PARAM_STR);
         }
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
         $stmt->bindParam(':limite', $productos_por_pagina, PDO::PARAM_INT);
 
-        //Ejecutar la consulta
+        // Ejecutar la consulta
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -51,31 +51,42 @@ function getArticulos($categoria, $buscar, $productos_por_pagina, $pagina_actual
     }
 }
 
-//Obtener número total de productos que coinciden con los filtros
-function getTotalProductos($categoria, $buscar)
+// Función para obtener el número total de productos que coinciden con los filtros
+function getTotalProductos($subcategoria, $buscar)
 {
-    //Conexión BD
-    $conn = conectar_db();
-    $sql_total = "SELECT COUNT(*) FROM articulos WHERE 1";
-    //Aplicar filtros si hay
-    if ($categoria) {
-        $sql_total .= " AND categoria = :categoria";
-    }
-    if ($buscar) {
-        $sql_total .= " AND nombre LIKE :buscar";
-    }
+    try {
+        // Conexión a la base de datos
+        $conn = conectar_db();
 
-    $stmt_total = $conn->prepare($sql_total);
-    if ($categoria) {
-        $stmt_total->bindParam(':categoria', $categoria, PDO::PARAM_STR);
+        $sql_total = "SELECT COUNT(*) FROM articulos WHERE 1";
+
+        // Aplicar filtro por subcategoría
+        if ($subcategoria) {
+            $sql_total .= " AND id_subcategoria = :subcategoria";
+        }
+
+        // Aplicar filtro por término de búsqueda
+        if ($buscar) {
+            $sql_total .= " AND nombre LIKE :buscar";
+        }
+
+        $stmt_total = $conn->prepare($sql_total);
+        if ($subcategoria) {
+            $stmt_total->bindParam(':subcategoria', $subcategoria, PDO::PARAM_INT);
+        }
+        if ($buscar) {
+            $buscar = "%" . $buscar . "%"; // Búsqueda parcial
+            $stmt_total->bindParam(':buscar', $buscar, PDO::PARAM_STR);
+        }
+        $stmt_total->execute();
+
+        return $stmt_total->fetchColumn();
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
+        return 0;
     }
-    if ($buscar) {
-        $buscar = "%" . $buscar . "%"; //Utilizamos % para hacer la búsqueda parcial
-        $stmt_total->bindParam(':buscar', $buscar, PDO::PARAM_STR);
-    }
-    $stmt_total->execute();
-    return $stmt_total->fetchColumn();
 }
+
 
 
 //Insertar un nuevo pedido en la tabla "pedidos"

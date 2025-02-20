@@ -3,6 +3,30 @@
 require_once("connect.php");
 session_start();
 
+$conn = conectar_db();
+$sql = "SELECT c.id AS cat_id, c.descripcion AS cat_desc, s.id AS sub_id, s.descripcion AS sub_desc
+        FROM categoria c
+        JOIN subcategoria s ON c.id = s.id_categoria
+        ORDER BY c.id, s.descripcion";
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+
+// Agrupar los resultados por categoría
+$categories = [];
+while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    $catId = $row['cat_id'];
+    if (!isset($categories[$catId])) {
+        $categories[$catId] = [
+            'descripcion' => $row['cat_desc'],
+            'subcategorias' => []
+        ];
+    }
+    $categories[$catId]['subcategorias'][] = [
+        'id' => $row['sub_id'],
+        'descripcion' => $row['sub_desc']
+    ];
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -94,125 +118,44 @@ session_start();
                             <div class="card">
                                 <div class="card-body p-0">
                                     <div class="accordion" id="categoriesAccordion">
+                                        <!-- Opción "Todos" -->
                                         <div class="accordion-item">
-                                            <div class="accordion-item">
-                                                <h2 class="accordion-header">
-                                                    <button
-                                                        class="accordion-button collapsed bg-transparent txt-custom py-5"
-                                                        type="button" data-bs-toggle="collapse"
-                                                        data-bs-target="#todosCollapse">
-                                                        Todos
-                                                    </button>
-                                                </h2>
-                                                <div id="todosCollapse" class="accordion-collapse collapse"
-                                                    data-bs-parent="#categoriesAccordion">
-                                                    <div class="accordion-body">
-                                                        <ul class="list-unstyled mb-0">
-                                                            <li><a href="index.php"
-                                                                    class="txt-custom text-decoration-none">Ver todo</a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="accordion-item">
-                                                <h2 class="accordion-header">
-                                                    <button
-                                                        class="accordion-button collapsed bg-transparent txt-custom py-5"
-                                                        type="button" data-bs-toggle="collapse"
-                                                        data-bs-target="#ramenCollapse">
-                                                        Ramen y Sopas
-                                                    </button>
-                                                </h2>
-                                                <div id="ramenCollapse" class="accordion-collapse collapse"
-                                                    data-bs-parent="#categoriesAccordion">
-                                                    <div class="accordion-body">
-                                                        <ul class="list-unstyled mb-0">
-                                                            <li><a href="index.php?categoria=RAMEN"
-                                                                    class="txt-custom text-decoration-none">Ramen</a>
-                                                            </li>
-                                                            <li><a href="index.php?categoria=SOPAS"
-                                                                    class="txt-custom text-decoration-none">Sopas</a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="accordion-item">
-                                                <h2 class="accordion-header">
-                                                    <button
-                                                        class="accordion-button collapsed bg-transparent txt-custom py-5"
-                                                        type="button" data-bs-toggle="collapse"
-                                                        data-bs-target="#dulcesCollapse">
-                                                        Dulces
-                                                    </button>
-                                                </h2>
-                                                <div id="dulcesCollapse" class="accordion-collapse collapse"
-                                                    data-bs-parent="#categoriesAccordion">
-                                                    <div class="accordion-body">
-                                                        <ul class="list-unstyled mb-0">
-                                                            <li><a href="index.php?categoria=CHOCOLATES"
-                                                                    class="txt-custom text-decoration-none">Chocolates</a>
-                                                            </li>
-                                                            <li><a href="index.php?categoria=GALLETAS"
-                                                                    class="txt-custom text-decoration-none">Galletas</a>
-                                                            </li>
-                                                            <li><a href="index.php?categoria=CARAMELOS"
-                                                                    class="txt-custom text-decoration-none">Caramelos</a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="accordion-item">
-                                                <h2 class="accordion-header">
-                                                    <button
-                                                        class="accordion-button collapsed bg-transparent txt-custom py-5"
-                                                        type="button" data-bs-toggle="collapse"
-                                                        data-bs-target="#snacksCollapse">
-                                                        Snacks
-                                                    </button>
-                                                </h2>
-                                                <div id="snacksCollapse" class="accordion-collapse collapse"
-                                                    data-bs-parent="#categoriesAccordion">
-                                                    <div class="accordion-body">
-                                                        <ul class="list-unstyled mb-0">
-                                                            <li><a href="index.php?categoria=PATATAS"
-                                                                    class="txt-custom text-decoration-none">Patatas</a>
-                                                            </li>
-                                                            <li><a href="index.php?categoria=FRUTOS SECOS"
-                                                                    class="txt-custom text-decoration-none">Frutos
-                                                                    Secos</a></li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="accordion-item">
-                                                <h2 class="accordion-header">
-                                                    <button
-                                                        class="accordion-button collapsed bg-transparent txt-custom py-5"
-                                                        type="button" data-bs-toggle="collapse"
-                                                        data-bs-target="#bebidasCollapse">
-                                                        Bebidas
-                                                    </button>
-                                                </h2>
-                                                <div id="bebidasCollapse" class="accordion-collapse collapse"
-                                                    data-bs-parent="#categoriesAccordion">
-                                                    <div class="accordion-body">
-                                                        <ul class="list-unstyled mb-0">
-                                                            <li><a href="index.php?categoria=REFRESCOS"
-                                                                    class="txt-custom text-decoration-none">Refrescos</a>
-                                                            </li>
-                                                            <li><a href="index.php?categoria=TES"
-                                                                    class="txt-custom text-decoration-none">Tés</a></li>
-                                                            <li><a href="index.php?categoria=OTRAS BEBIDAS"
-                                                                    class="txt-custom text-decoration-none">Otras
-                                                                    Bebidas</a></li>
-                                                        </ul>
-                                                    </div>
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button collapsed bg-transparent txt-custom py-5" type="button" data-bs-toggle="collapse" data-bs-target="#todosCollapse">
+                                                    Todos
+                                                </button>
+                                            </h2>
+                                            <div id="todosCollapse" class="accordion-collapse collapse" data-bs-parent="#categoriesAccordion">
+                                                <div class="accordion-body">
+                                                    <ul class="list-unstyled mb-0">
+                                                        <li><a href="index.php" class="txt-custom text-decoration-none">Ver todo</a></li>
+                                                    </ul>
                                                 </div>
                                             </div>
                                         </div>
+                                        <!-- Generación dinámica de grupos y subcategorías -->
+                                        <?php foreach ($categories as $cat): ?>
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed bg-transparent txt-custom py-5" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<?= str_replace(' ', '', $cat['descripcion']) ?>">
+                                                        <?= htmlspecialchars($cat['descripcion']) ?>
+                                                    </button>
+                                                </h2>
+                                                <div id="collapse<?= str_replace(' ', '', $cat['descripcion']) ?>" class="accordion-collapse collapse" data-bs-parent="#categoriesAccordion">
+                                                    <div class="accordion-body">
+                                                        <ul class="list-unstyled mb-0">
+                                                            <?php foreach ($cat['subcategorias'] as $sub): ?>
+                                                                <li>
+                                                                    <a href="index.php?subcategoria=<?= urlencode($sub['id']) ?>" class="txt-custom text-decoration-none">
+                                                                        <?= htmlspecialchars($sub['descripcion']) ?>
+                                                                    </a>
+                                                                </li>
+                                                            <?php endforeach; ?>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; ?>
                                     </div>
                                 </div>
                             </div>
@@ -220,8 +163,8 @@ session_start();
 
                         <!-- Área de productos -->
                         <?php
-                        // Obtenemos la categoría seleccionada desde el parámetro GET (si existe)
-                        $categoria = isset($_GET['categoria']) ? $_GET['categoria'] : '';
+                        // Obtenemos la subcategoría seleccionada desde el parámetro GET (si existe)
+                        $subcategoria = isset($_GET['subcategoria']) ? $_GET['subcategoria'] : '';
                         // Obtenemos el término de búsqueda desde el parámetro GET (si existe)
                         $buscar = isset($_GET['buscar']) ? $_GET['buscar'] : '';
 
@@ -230,7 +173,7 @@ session_start();
                         $pagina_actual = isset($_GET['pagina']) ? (int) $_GET['pagina'] : 1;
                         $offset = ($pagina_actual - 1) * $productos_por_pagina;
                         require_once('apiBD.php');
-                        $articulos = getArticulos($categoria, $buscar, $productos_por_pagina, $pagina_actual, $offset);
+                        $articulos = getArticulos($subcategoria, $buscar, $productos_por_pagina, $pagina_actual, $offset);
 
                         // Mostrar los productos
                         foreach ($articulos as $articulo) {
@@ -255,19 +198,19 @@ session_start();
                         }
 
                         // Obtener el número total de productos para la paginación
-                        $total_productos = getTotalProductos($categoria, $buscar);
+                        $total_productos = getTotalProductos($subcategoria, $buscar);
                         $total_paginas = ceil($total_productos / $productos_por_pagina);
 
                         // Mostrar la paginación
                         echo '<div class="pagination d-flex justify-content-center mt-4">';
                         if ($pagina_actual > 1) {
-                            echo '<a href="?pagina=' . ($pagina_actual - 1) . '" class="btn btn-custom me-2">Anterior</a>';
+                            echo '<a href="?pagina=' . ($pagina_actual - 1) . '&subcategoria=' . urlencode($subcategoria) . '" class="btn btn-custom me-2">Anterior</a>';
                         }
                         for ($i = 1; $i <= $total_paginas; $i++) {
-                            echo '<a href="?pagina=' . $i . '" class="btn btn-custom me-2">' . $i . '</a>';
+                            echo '<a href="?pagina=' . $i . '&subcategoria=' . urlencode($subcategoria) . '" class="btn btn-custom me-2">' . $i . '</a>';
                         }
                         if ($pagina_actual < $total_paginas) {
-                            echo '<a href="?pagina=' . ($pagina_actual + 1) . '" class="btn btn-custom ms-2">Siguiente</a>';
+                            echo '<a href="?pagina=' . ($pagina_actual + 1) . '&subcategoria=' . urlencode($subcategoria) . '" class="btn btn-custom ms-2">Siguiente</a>';
                         }
                         echo '</div>';
                         ?>

@@ -5,16 +5,16 @@ class Articulo
     private $codigo;
     private $nombre;
     private $descripcion;
-    private $categoria;
+    private $id_subcategoria;
     private $precio;
     private $imagen;
 
-    public function __construct($codigo, $nombre, $descripcion, $categoria, $precio, $imagen)
+    public function __construct($codigo, $nombre, $descripcion, $id_subcategoria, $precio, $imagen)
     {
         $this->codigo = $codigo;
         $this->nombre = $nombre;
         $this->descripcion = $descripcion;
-        $this->categoria = $categoria;
+        $this->id_subcategoria = $id_subcategoria;
         $this->precio = $precio;
         $this->imagen = $imagen;
     }
@@ -31,9 +31,9 @@ class Articulo
     {
         return $this->descripcion;
     }
-    public function getCategoria()
+    public function getIdSubcategoria()
     {
-        return $this->categoria;
+        return $this->id_subcategoria;
     }
     public function getPrecio()
     {
@@ -57,9 +57,9 @@ class Articulo
     {
         $this->descripcion = $descripcion;
     }
-    public function setCategoria($categoria)
+    public function setIdSubcategoria($id_subcategoria)
     {
-        $this->categoria = $categoria;
+        $this->id_subcategoria = $id_subcategoria;
     }
     public function setPrecio($precio)
     {
@@ -107,7 +107,7 @@ class Articulo
                         $row['codigo'],
                         $row['nombre'],
                         $row['descripcion'],
-                        $row['categoria'],
+                        $row['id_subcategoria'],
                         $row['precio'],
                         $row['imagen'],
                     );
@@ -124,18 +124,18 @@ class Articulo
     }
 
     //Function para modificar un artículo
-    public static function modificarArticulo($codigo, $nombre, $descripcion, $categoria, $precio, $imagen)
+    public static function modificarArticulo($codigo, $nombre, $descripcion, $id_subcategoria, $precio, $imagen)
 {
     try {
         $conn = conectar_db();
 
         //Consulta para actualizar los datos del artículo
-        $sql = "UPDATE articulos SET nombre = :nombre, descripcion = :descripcion, categoria = :categoria, precio = :precio, imagen = :imagen WHERE codigo = :codigo";
+        $sql = "UPDATE articulos SET nombre = :nombre, descripcion = :descripcion, id_subcategoria = :id_subcategoria, precio = :precio, imagen = :imagen WHERE codigo = :codigo";
         $stmt = $conn->prepare($sql);
 
         $stmt->bindParam(':nombre', $nombre);
         $stmt->bindParam(':descripcion', $descripcion);
-        $stmt->bindParam(':categoria', $categoria);
+        $stmt->bindParam(':id_subcategoria', $id_subcategoria);
         $stmt->bindParam(':precio', $precio);
         $stmt->bindParam(':imagen', $imagen);
         $stmt->bindParam(':codigo', $codigo);

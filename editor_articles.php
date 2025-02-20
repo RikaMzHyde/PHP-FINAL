@@ -76,6 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sort'])) {
         #botonAtras a,
         #logout a,
         #nuevoArticulo a,
+        #gestionarCategorias a,
         #modificarArticulo a,
         #borrarArticulo a,
         .paginacion a,
@@ -95,6 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sort'])) {
         #botonAtras a:hover,
         #logout a:hover,
         #nuevoArticulo a:hover,
+        #gestionarCategorias a:hover,
         #modificarArticulo a:hover,
         #borrarArticulo a:hover,
         .paginacion a:hover,
@@ -209,6 +211,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sort'])) {
             <div id="nuevoArticulo">
                 <a href="new_article.php">Agregar Nuevo Artículo</a>
             </div>
+            <div id="gestionarCategorias">
+                <a href="manage_categories.php">Gestionar Categorías</a>
+            </div>
             <div id="logout">
                 <a href="logout.php">Cerrar Sesión</a>
             </div>
@@ -279,13 +284,27 @@ try {
     //Consulta con el orden y la busqueda según el criterio
     switch ($sort) {
         case 'nombre_asc':
-            $consulta = "SELECT * FROM articulos WHERE nombre LIKE :busqueda ORDER BY nombre ASC LIMIT :inicio, :articulosPorPagina";
+            $consulta = "SELECT a.*, s.descripcion AS subcategoria 
+                         FROM articulos a 
+                         LEFT JOIN subcategoria s ON a.id_subcategoria = s.id 
+                         WHERE a.nombre LIKE :busqueda 
+                         ORDER BY a.nombre ASC 
+                         LIMIT :inicio, :articulosPorPagina";
             break;
         case 'nombre_desc':
-            $consulta = "SELECT * FROM articulos WHERE nombre LIKE :busqueda ORDER BY nombre DESC LIMIT :inicio, :articulosPorPagina";
+            $consulta = "SELECT a.*, s.descripcion AS subcategoria 
+                         FROM articulos a 
+                         LEFT JOIN subcategoria s ON a.id_subcategoria = s.id 
+                         WHERE a.nombre LIKE :busqueda 
+                         ORDER BY a.nombre DESC 
+                         LIMIT :inicio, :articulosPorPagina";
             break;
         default:
-            $consulta = "SELECT * FROM articulos WHERE nombre LIKE :busqueda LIMIT :inicio, :articulosPorPagina";
+            $consulta = "SELECT a.*, s.descripcion AS subcategoria 
+                         FROM articulos a 
+                         LEFT JOIN subcategoria s ON a.id_subcategoria = s.id 
+                         WHERE a.nombre LIKE :busqueda 
+                         LIMIT :inicio, :articulosPorPagina";
     }
 
     $stmt = $conn->prepare($consulta);
@@ -299,7 +318,7 @@ try {
                     <td>" . $datos["codigo"] . "</td>
                     <td>" . $datos["nombre"] . "</td>
                     <td>" . $datos["descripcion"] . "</td>
-                    <td>" . $datos["categoria"] . "</td>
+                    <td>" . $datos["subcategoria"] . "</td>
                     <td>" . $datos["precio"] . '€' . "</td>
                     <td><img src='" . $datos["imagen"] . "' alt='imagen'></td>
                     <td><a href='modify_article.php?codigo=" . $datos["codigo"] . "'>✏️</a></td>

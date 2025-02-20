@@ -3,6 +3,11 @@ require_once("connect.php");
 include("functions/security.php");
 include("article_class.php");
 
+$conn = conectar_db();
+$stmt = $conn->prepare("SELECT s.id, s.descripcion FROM subcategoria s ORDER BY s.descripcion");
+$stmt->execute();
+$subcategorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 if (isset($_GET["codigo"])) {
     $codigo = $_GET["codigo"];
     $articulo = Articulo::obtenerCodigoArticulo($codigo);
@@ -12,7 +17,7 @@ if (isset($_GET["codigo"])) {
         $codigo = $articulo->getCodigo();
         $nombre = $articulo->getNombre();
         $descripcion = $articulo->getDescripcion();
-        $categoria = $articulo->getCategoria();
+        $subcategoria = $articulo->getIdSubcategoria();
         $precio = $articulo->getPrecio();
         $imagenActual = $articulo->getImagen();
     } else {
@@ -32,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     //Obtenemos los datos del form
     $nombre = $_POST["nombre"];
     $descripcion = $_POST["descripcion"];
-    $categoria = $_POST["categoria"];
+    $id_subcategoria = $_POST["id_subcategoria"];
     $precio = $_POST["precio"];
     $imagenActual = $_POST["imagen"];
 
@@ -78,7 +83,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     //Si no hay errores, se modifica el artículo
     if (empty($mensajeError)) {
         $conn = conectar_DB();
-        $resultado = Articulo::modificarArticulo($codigo, $nombre, $descripcion, $categoria, $precio, $imagen);
+        $resultado = Articulo::modificarArticulo($codigo, $nombre, $descripcion, $id_subcategoria, $precio, $imagen);
+
 
         if ($resultado > 0) {
             $mensajeExito = "Artículo modificado correctamente.";
@@ -178,9 +184,15 @@ function generateRandomString($length = 10)
                     <label for="descripcion">Descripción:</label>
                     <textarea name="descripcion" maxlength="255" required rows="5" style="width: 100%; box-sizing: border-box; margin-bottom: 5px;"><?php echo $descripcion; ?></textarea>
 
-                    <label for="categoria">Categoría:</label>
-                    <input type="text" name="categoria" maxlength="40" value="<?php echo $categoria; ?>" required>
-
+                    <label for="subcategoria">Subcategoría:</label>
+                    <select name="id_subcategoria" id="id_subcategoria" class="form-select"  style="margin-bottom: 5px;" required>
+                        <?php foreach ($subcategorias as $sub): ?>
+                            <option value="<?= $sub['id'] ?>" <?= (isset($subcategoria) && $subcategoria == $sub['id']) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($sub['descripcion']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    
                     <label for="precio">Precio:</label>
                     <input type="number" name="precio" step="0.01" min="0" max="999999999999.99" value="<?php echo $precio; ?>" required>
 

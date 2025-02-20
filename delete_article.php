@@ -10,7 +10,8 @@ if (isset($_GET['codigo'])) {
     $conn = conectar_db();
 
     //Obtenemos los datos del artículo con el código proporcionado
-    $stmt = $conn->prepare("SELECT * FROM articulos WHERE codigo = :codigo");
+    $stmt = $conn->prepare("SELECT a.*, s.descripcion AS subcategoria FROM articulos a 
+    LEFT JOIN subcategoria s ON a.id_subcategoria = s.id WHERE a.codigo = :codigo");
     $stmt->bindParam(':codigo', $codigo);
     $stmt->execute();
 
@@ -19,7 +20,7 @@ if (isset($_GET['codigo'])) {
         $articulo = $stmt->fetch(PDO::FETCH_ASSOC);
         $nombre = $articulo['nombre'];
         $descripcion = $articulo['descripcion'];
-        $categoria = $articulo['categoria'];
+        $subcategoria = $articulo['subcategoria'];
         $precio = $articulo['precio'];
         $imagen = $articulo['imagen'];
     } else {
@@ -119,7 +120,7 @@ if (isset($_GET['codigo'])) {
                         <td><?php echo $codigo; ?></td>
                         <td><?php echo $nombre; ?></td>
                         <td><?php echo $descripcion; ?></td>
-                        <td><?php echo $categoria; ?></td>
+                        <td><?php echo $subcategoria; ?></td>
                         <td><?php echo $precio; ?></td>
                         <td><img src="<?php echo $imagen; ?>" alt="Vista previa de la imagen"></td>
                     </tr>
